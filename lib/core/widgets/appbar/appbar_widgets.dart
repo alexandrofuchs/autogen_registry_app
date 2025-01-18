@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plain_registry_app/core/theme/app_colors.dart';
-import 'package:plain_registry_app/core/widgets/searchbar/searchbar_widget.dart';
 
-mixin AppbarWidgets on SearchbarWidget {
+mixin AppbarWidgets {
   Widget _backgroundWidget() => Column(
         children: [
           Container(
@@ -27,7 +26,7 @@ mixin AppbarWidgets on SearchbarWidget {
         ],
       );
 
-  PreferredSize searchAppBarBottom() => PreferredSize(
+  PreferredSize appBarBottom({Widget? child}) => PreferredSize(
       preferredSize: const Size.fromHeight(150),
       child: Stack(
         alignment: Alignment.bottomCenter,
@@ -41,15 +40,9 @@ mixin AppbarWidgets on SearchbarWidget {
                     bottomLeft: Radius.circular(5),
                     topLeft: Radius.circular(5),
                     bottomRight: Radius.circular(100)),
-                boxShadow: [
-                  BoxShadow(
-                      color: AppColors.primaryColorDark,
-                      offset: const Offset(0, 2),
-                      blurRadius: 2,
-                      spreadRadius: -2)
-                ]),
+                boxShadow: const []),
             margin: const EdgeInsets.only(bottom: 20, left: 25, right: 25),
-            child: searchBar(),
+            child: child,
           )
         ],
       ));

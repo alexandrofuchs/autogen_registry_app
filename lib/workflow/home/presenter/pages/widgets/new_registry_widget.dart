@@ -14,23 +14,6 @@ mixin NewRegistryWidget on CommonWidgets {
 
   late ValueNotifier<int> selectedFileType;
 
-  
-
-  Widget addNewFileButtomHeader() => Container(
-        decoration: BoxDecoration(
-          gradient: AppGradients.primaryColors,
-          borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(25), topRight: Radius.circular(25)),
-          color: AppColors.primaryColor,
-        ),
-        height: 50,
-        alignment: Alignment.center,
-        child: Text(
-          'Adicionar novo arquivo',
-          style: AppTextStyles.labelStyleLarge,
-        ),
-      );
-
   Widget selectFields(
           List<String> options, ValueNotifier<int> selectedFileType) =>
       fieldContainer(
@@ -75,7 +58,7 @@ mixin NewRegistryWidget on CommonWidgets {
                           onTap: () {
                             Navigator.of(context).pop();
                           },
-                          child: addNewFileButtomHeader()),
+                          child:  headerContainer('Novo arquivo: toque para fechar'),),
                       Expanded(
                         child: ListView(
                           shrinkWrap: true,

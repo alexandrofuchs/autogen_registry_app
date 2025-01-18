@@ -9,6 +9,10 @@ abstract class AppColors {
 
   static Color greenDark = const Color(0xff009343);
   static Color greenLight = const Color(0xff70FFB2);
+
+  static Color orangeDark = const Color(0xffFF3A3A);
+  static Color orangeLight = const Color(0xffFF7474);
+  
 }
 
 abstract class AppGradients {
