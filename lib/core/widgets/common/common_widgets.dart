@@ -10,7 +10,7 @@ mixin CommonWidgets {
               topLeft: Radius.circular(25), topRight: Radius.circular(25)),
           color: AppColors.primaryColor,
         ),
-        height: 50,
+        height: 35,
         alignment: Alignment.center,
         child: Text(
           text,
@@ -109,22 +109,24 @@ mixin CommonWidgets {
         ),
       );
 
-  Widget _filterItem(String label) =>
-    Container(
-          decoration: BoxDecoration(
-            color: AppColors.secundaryColor,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(50),
-              topRight: Radius.circular(25),
-              bottomLeft: Radius.circular(25),
-              bottomRight: Radius.circular(50),
-            ),
-            border: Border.all(width: 1.5, color: AppColors.primaryColorDark),
+  Widget _filterItem(String label) => Container(
+        decoration: BoxDecoration(
+          color: AppColors.secundaryColor,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(50),
+            topRight: Radius.circular(25),
+            bottomLeft: Radius.circular(25),
+            bottomRight: Radius.circular(50),
           ),
-          padding:
-              const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-          child: Text(label, style: AppTextStyles.bodyStyleMedium.copyWith(fontStyle: FontStyle.italic), ),
-        );
+          border: Border.all(width: 1.5, color: AppColors.primaryColorDark),
+        ),
+        padding: const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+        child: Text(
+          label,
+          style: AppTextStyles.bodyStyleMedium
+              .copyWith(fontStyle: FontStyle.italic),
+        ),
+      );
 
   Widget unselectedFilterBar() => Container(
         margin: const EdgeInsets.only(left: 25, right: 25),

@@ -3,7 +3,7 @@ import 'package:plain_registry_app/core/theme/app_colors.dart';
 import 'package:plain_registry_app/core/theme/app_text_styles.dart';
 
 mixin SearchbarWidget {
-  Widget searchBar() => Padding(
+  Widget searchBar(Function(String value) onTextChange) => Padding(
         padding: const EdgeInsets.all(5),
         child: Row(
           children: [
@@ -14,6 +14,7 @@ mixin SearchbarWidget {
             Expanded(
               child: TextField(
                 cursorColor: AppColors.primaryColorDark,
+                onChanged: onTextChange,
                 decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: 'search',

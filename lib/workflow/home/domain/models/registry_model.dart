@@ -1,6 +1,31 @@
 import 'package:equatable/equatable.dart';
 
+enum RegistryType {
+  document,
+  image,
+  video,
+}
+
 class RegistryModel extends Equatable {
+  final String filename;
+  final String description;
+  final String category;
+  final DateTime dateTime;
+  final RegistryType type;
+
+  const RegistryModel(
+      {required this.filename,
+      required this.description,
+      required this.category,
+      required this.dateTime,
+      required this.type});
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [
+        filename,
+        description,
+        category,
+        dateTime,
+        type,
+      ];
 }

@@ -1,6 +1,6 @@
+import 'package:plain_registry_app/core/response/i_response_result.dart';
 import 'package:plain_registry_app/workflow/home/domain/models/registry_model.dart';
 
-abstract class IRegistryRepository<DataType extends RegistryModel> {
-  Future<void> save();
-  Future<void> load();
+abstract class IRegistriesRepository {
+  Future<IResponseResult<List<RegistryModel>>> load();
 }
