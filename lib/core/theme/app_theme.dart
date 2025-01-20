@@ -6,20 +6,20 @@ abstract class AppTheme {
   static ThemeData defaultTheme(BuildContext context) =>
       ThemeData.light().copyWith(
         scaffoldBackgroundColor: AppColors.backgroundColor,
-        appBarTheme: AppBarTheme(
-          backgroundColor: AppColors.primaryColorDark,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: AppColors.primaryColor,
           elevation: 1,
-          toolbarHeight: 0,
+          toolbarHeight: 50,
           titleTextStyle: AppTextStyles.labelStyleLarge,
           iconTheme: IconThemeData(color: AppColors.secundaryColor, size: 24)
         ),
-        inputDecorationTheme: InputDecorationTheme(
+        inputDecorationTheme: const InputDecorationTheme(
           hintStyle: AppTextStyles.labelStyleMedium,
         ),
-        bottomAppBarTheme: BottomAppBarTheme(
+        bottomAppBarTheme: const BottomAppBarTheme(
           color: AppColors.secundaryColor,
         ),
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           titleLarge: AppTextStyles.titleStyleLarge,
           titleMedium: AppTextStyles.titleStyleMedium,
           titleSmall: AppTextStyles.titleStyleSmall,
@@ -30,16 +30,16 @@ abstract class AppTheme {
           labelMedium: AppTextStyles.labelStyleMedium,
           labelSmall: AppTextStyles.labelStyleSmall,
         ),
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           size: 32,
           color: AppColors.primaryColorDark,
         ),
         dividerColor: AppColors.primaryColorDark,
-        dividerTheme: DividerThemeData(
+        dividerTheme: const DividerThemeData(
           thickness: 2,
           color: AppColors.primaryColorDark,
         ),
-        buttonTheme: ButtonThemeData(
+        buttonTheme: const ButtonThemeData(
           buttonColor: AppColors.primaryColorDark,
         ),
       );

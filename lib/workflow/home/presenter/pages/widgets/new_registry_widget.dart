@@ -48,9 +48,9 @@ mixin NewRegistryWidget on CommonWidgets {
                 backgroundColor: Colors.transparent,
                 body: Container(
                   margin: const EdgeInsets.only(top: 150),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     gradient: AppGradients.primaryColors,
-                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))
                   ),
                   child: Column(
                     children: [

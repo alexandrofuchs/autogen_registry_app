@@ -4,9 +4,9 @@ import 'package:plain_registry_app/core/theme/app_text_styles.dart';
 
 mixin CommonWidgets {
   Widget headerContainer(String text) => Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: AppGradients.primaryColors,
-          borderRadius: const BorderRadius.only(
+          borderRadius: BorderRadius.only(
               topLeft: Radius.circular(25), topRight: Radius.circular(25)),
           color: AppColors.primaryColor,
         ),
@@ -24,17 +24,23 @@ mixin CommonWidgets {
       );
 
   Widget item(IconData icon, String title, String furtherInfo) => Container(
-        margin: const EdgeInsets.only(top: 8, right: 15, bottom: 7),
+        margin: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: AppColors.secundaryColor,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(0),
-            topRight: Radius.circular(0),
-            bottomLeft: Radius.circular(0),
-            bottomRight: Radius.circular(0),
-          ),
-          border: Border.all(color: AppColors.primaryColorDark, width: 1),
-        ),
+            color: AppColors.secundaryColor,
+            border: Border.all(width: 0.5, color: AppColors.primaryColorDark),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(25),
+              topRight: Radius.circular(25),
+              bottomLeft: Radius.circular(25),
+              bottomRight: Radius.circular(25),
+            ),
+            boxShadow: [
+              BoxShadow(
+                  blurRadius: 1,
+                  spreadRadius: 0,
+                  color: Colors.black.withAlpha(100),
+                  offset: const Offset(1, 1))
+            ]),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -70,13 +76,14 @@ mixin CommonWidgets {
                   onTap: () {},
                   child: Container(
                     alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(25)),
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(25),
+                            bottomRight: Radius.circular(25)),
                         gradient: AppGradients.primaryColors),
                     height: 45,
                     width: 100,
-                    child: Text(
+                    child: const Text(
                       'excluir',
                       style: AppTextStyles.labelStyleSmall,
                       softWrap: true,
@@ -86,26 +93,6 @@ mixin CommonWidgets {
               ],
             )
           ],
-        ),
-      );
-
-  Widget filterBar() => Container(
-        margin: const EdgeInsets.only(left: 25, right: 25),
-        alignment: Alignment.topLeft,
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.primaryColorDark,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(50),
-              topRight: Radius.circular(25),
-              bottomLeft: Radius.circular(25),
-              bottomRight: Radius.circular(50),
-            ),
-            border: Border.all(width: 1.5, color: AppColors.primaryColorDark),
-          ),
-          padding:
-              const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-          child: Text('docs', style: AppTextStyles.labelStyleSmall),
         ),
       );
 
@@ -128,12 +115,11 @@ mixin CommonWidgets {
         ),
       );
 
-  Widget unselectedFilterBar() => Container(
-        margin: const EdgeInsets.only(left: 25, right: 25),
-        alignment: Alignment.topLeft,
+  Widget filterBar() => Padding(
+        padding: const EdgeInsets.all(15),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _filterItem('filtrar categoria'),
             const SizedBox(width: 10),
             _filterItem('filtrar tipo arquivo'),
           ],
@@ -141,9 +127,9 @@ mixin CommonWidgets {
       );
 
   Widget fieldContainer({Widget? child}) => Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
             color: AppColors.secundaryColor,
-            borderRadius: const BorderRadius.only(
+            borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(45),
                 topRight: Radius.circular(25),
                 bottomLeft: Radius.circular(25),
@@ -171,17 +157,17 @@ mixin CommonWidgets {
           onTap: enable ? action : null,
           child: Container(
             alignment: Alignment.centerLeft,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               boxShadow: [
                 BoxShadow(
                   color: AppColors.greenLight,
-                  offset: const Offset(0, 2),
+                  offset: Offset(0, 2),
                   spreadRadius: 0,
                   blurRadius: 2,
                 )
               ],
               gradient: AppGradients.actionColors,
-              borderRadius: const BorderRadius.only(
+              borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(10),
                   bottomLeft: Radius.circular(10)),
             ),
@@ -198,5 +184,49 @@ mixin CommonWidgets {
             ),
           ),
         ),
+      );
+
+  Widget titleDot(String text) => SizedBox(
+        height: 50,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(right: 5),
+              decoration: BoxDecoration(
+                color: AppColors.primaryColorDark,
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ),
+            Flexible(
+                child: Text(
+              text,
+              style: AppTextStyles.bodyStyleLarge
+                  .copyWith(fontWeight: FontWeight.w300),
+              softWrap: true,
+            )),
+          ],
+        ),
+      );
+
+  Widget itemDot(String text) => Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.primaryColorDark,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            width: 10,
+            height: 10,
+          ),
+          const SizedBox(width: 15),
+          Flexible(
+              child: Text(
+            text,
+            style: AppTextStyles.titleStyleLarge,
+            softWrap: true,
+          )),
+        ],
       );
 }

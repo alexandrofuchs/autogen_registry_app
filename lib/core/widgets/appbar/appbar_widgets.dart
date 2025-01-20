@@ -7,7 +7,7 @@ mixin AppbarWidgets {
         children: [
           Container(
             alignment: Alignment.topCenter,
-            padding: EdgeInsets.only(top: 15),
+            padding: const EdgeInsets.only(top: 15),
             decoration:
                 BoxDecoration(
                   gradient: AppGradients.primaryColors, boxShadow: [
@@ -17,7 +17,7 @@ mixin AppbarWidgets {
                 blurRadius: 1,
                 color: Colors.black.withAlpha(200),
               ),
-              BoxShadow(
+              const BoxShadow(
                 color: AppColors.secundaryColor,
               )
             ]),
@@ -39,14 +39,14 @@ mixin AppbarWidgets {
         children: [
           _backgroundWidget(label ?? ''),
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 color: AppColors.secundaryColor,
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                     topRight: Radius.circular(5),
                     bottomLeft: Radius.circular(5),
                     topLeft: Radius.circular(5),
                     bottomRight: Radius.circular(100)),
-                boxShadow: const []),
+                boxShadow: []),
             margin: const EdgeInsets.only(bottom: 20, left: 25, right: 25),
             child: child,
           )

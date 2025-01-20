@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 
 abstract class AppColors {
-  static Color primaryColorDark = const Color(0xff0A434E);
-  static Color primaryColor = const Color(0xff05445E);
-  static Color primaryColorLight = const Color(0xff189AB4);
-  static Color backgroundColor = const Color(0xffd4f1f4);
-  static Color secundaryColor = const Color(0xffffffff);
+  static const Color primaryColorDark = Color(0xff0A434E);
+  static const Color primaryColor = Color(0xff05445E);
+  static const Color primaryColorLight = Color(0xff189AB4);
+  static const Color backgroundColor = Color(0xffd4f1f4);
+  static const Color secundaryColor = Color(0xffffffff);
 
-  static Color greenDark = const Color(0xff009343);
-  static Color greenLight = const Color(0xff70FFB2);
+  static const Color greenDark = Color(0xff009343);
+  static const Color greenLight = Color(0xff70FFB2);
 
-  static Color orangeDark = const Color(0xffFF3A3A);
-  static Color orangeLight = const Color(0xffFF7474);
-  
+  static const Color orangeDark = Color(0xffFF3A3A);
+  static const Color orangeLight = Color(0xffFF7474);
 }
 
 abstract class AppGradients {
-  static LinearGradient primaryColors = const LinearGradient(
+  static const LinearGradient primaryColors = LinearGradient(
     colors: [
       Color(0xff05445E),
       Color(0xff189AB4),
@@ -25,7 +24,7 @@ abstract class AppGradients {
     end: Alignment.bottomCenter,
   );
 
-  static LinearGradient actionColors = const LinearGradient(
+  static const LinearGradient actionColors = LinearGradient(
     colors: [
       Color(0xff70FFB2),
       Color(0xff009343),

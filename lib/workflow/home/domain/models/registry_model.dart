@@ -1,17 +1,14 @@
 import 'package:equatable/equatable.dart';
+import 'package:plain_registry_app/core/helpers/extensions/list_extension.dart';
 
-enum RegistryType {
-  document,
-  image,
-  video,
-}
+part 'registry_type.dart';
 
-class CategoryModel<DataType extends Object> extends Equatable{
+class CategoryModel<DataType extends Object> extends Equatable {
   final String name;
   final List<DataType> items;
 
   const CategoryModel(this.name, this.items);
-  
+
   @override
   List<Object?> get props => [name];
 }
