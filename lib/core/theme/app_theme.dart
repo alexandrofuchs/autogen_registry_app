@@ -10,6 +10,8 @@ abstract class AppTheme {
           backgroundColor: AppColors.primaryColorDark,
           elevation: 1,
           toolbarHeight: 0,
+          titleTextStyle: AppTextStyles.labelStyleLarge,
+          iconTheme: IconThemeData(color: AppColors.secundaryColor, size: 24)
         ),
         inputDecorationTheme: InputDecorationTheme(
           hintStyle: AppTextStyles.labelStyleMedium,

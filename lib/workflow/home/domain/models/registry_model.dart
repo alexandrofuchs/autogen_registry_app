@@ -6,6 +6,16 @@ enum RegistryType {
   video,
 }
 
+class CategoryModel<DataType extends Object> extends Equatable{
+  final String name;
+  final List<DataType> items;
+
+  const CategoryModel(this.name, this.items);
+  
+  @override
+  List<Object?> get props => [name];
+}
+
 class RegistryModel extends Equatable {
   final String filename;
   final String description;

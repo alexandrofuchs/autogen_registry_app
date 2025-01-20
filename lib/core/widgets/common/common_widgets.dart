@@ -24,13 +24,13 @@ mixin CommonWidgets {
       );
 
   Widget item(IconData icon, String title, String furtherInfo) => Container(
-        margin: const EdgeInsets.only(left: 25, right: 25, bottom: 15),
+        margin: const EdgeInsets.only(top: 8, right: 15, bottom: 7),
         decoration: BoxDecoration(
           color: AppColors.secundaryColor,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(0),
-            topRight: Radius.circular(25),
-            bottomLeft: Radius.circular(25),
+            topRight: Radius.circular(0),
+            bottomLeft: Radius.circular(0),
             bottomRight: Radius.circular(0),
           ),
           border: Border.all(color: AppColors.primaryColorDark, width: 1),
