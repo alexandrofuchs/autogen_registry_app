@@ -53,52 +53,62 @@ class _RegistriesPageState extends State<RegistriesPage>
   Widget openedCategoryWidget(
           RegistriesProvider provider, int? categoryIndex) =>
       categoryIndex != null
-          ? Stack(
-              alignment: Alignment.bottomCenter,
+          ? Column(
               children: [
-                Column(children: [
-                  Row(
-                    children: [
-                      BackButton(
-                        onPressed: () {
-                          focusedCategoryIndex.value = null;
-                        },
-                        color: AppColors.secundaryColor,
-                        style: const ButtonStyle(
-                          iconSize: WidgetStatePropertyAll(24),
-                        ),
-                      ),
-                      Text(
-                        provider.categories![categoryIndex].name,
-                        style: AppTextStyles.labelStyleLarge,
-                      ),
-                    ],
-                  ),
-                  searchBar((value) {}),
-                  filterBar()
-                ]),
                 Container(
-                  margin: const EdgeInsets.only(top: 160),
-                  alignment: Alignment.topCenter,
-                  decoration: const BoxDecoration(
-                      color: AppColors.backgroundColor,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(25),
-                          topRight: Radius.circular(25))),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: provider.categories![categoryIndex].items.length,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) => item(
-                            fileIcons[index],
-                            provider.categories![categoryIndex].items[index]
-                                .description,
-                            '${provider.categories![categoryIndex].items[index].category} | ${provider.categories![categoryIndex].items[index].dateTime.toDaysNumberPast()}')
-                        .animate()
-                        .moveX(
-                            begin: -1000,
-                            end: 0,
-                            delay: Duration(milliseconds: 500 * index)),
+                    alignment: Alignment.bottomCenter,
+                    height: 50,
+                    margin: const EdgeInsets.only(top: 5, bottom: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        BackButton(
+                          onPressed: () {
+                            focusedCategoryIndex.value = null;
+                          },
+                          color: AppColors.secundaryColor,
+                          style: const ButtonStyle(
+                            iconSize: WidgetStatePropertyAll(24),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            provider.categories[categoryIndex].name,
+                            style: AppTextStyles.labelStyleLarge,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    )),
+                searchBar((value) {
+                  context.read<RegistriesProvider>().textFilter = value;
+                }),
+                filterBar(),
+
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 0),
+                    alignment: Alignment.topCenter,
+                    decoration: const BoxDecoration(
+                        color: AppColors.backgroundColor,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(25),
+                            topRight: Radius.circular(25))),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: provider.getCategoryItems(categoryIndex).length,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) => item(
+                              fileIcons[index],
+                              provider.getCategoryItems(categoryIndex)[index]
+                                  .description,
+                              '${provider.getCategoryItems(categoryIndex)[index].category} | ${provider.getCategoryItems(categoryIndex)[index].dateTime.toDaysNumberPast()}')
+                          .animate()
+                          .moveX(
+                              begin: -1000,
+                              end: 0,
+                              delay: Duration(milliseconds: 500 * index)),
+                    ),
                   ),
                 ),
               ],
@@ -113,52 +123,64 @@ class _RegistriesPageState extends State<RegistriesPage>
         child: Container(
             margin: const EdgeInsets.only(top: 15),
             decoration: const BoxDecoration(
-                color: AppColors.secundaryColor,
-                boxShadow: [
-                  BoxShadow(
-                      color: AppColors.primaryColorDark,
-                      spreadRadius: 1,
-                      blurRadius: 1)
-                ]),
+                gradient: AppGradients.primaryColors,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(25),
+                    topLeft: Radius.circular(100),
+                    bottomRight: Radius.circular(100),
+                    topRight: Radius.circular(25)),
+                boxShadow: [BoxShadow(offset: Offset(0, 1))]),
             padding: const EdgeInsets.only(left: 15, right: 15),
             child: Row(
               children: [
                 Expanded(
-                    child: titleDot(provider.categories![categoryIndex].name)),
+                    child: titleDot(provider.categories[categoryIndex].name)),
                 const Padding(
                   padding: EdgeInsets.only(right: 15),
                   child: Icon(
                     Icons.arrow_forward_ios,
                     size: 12,
-                    color: AppColors.primaryColorDark,
+                    color: AppColors.secundaryColor,
                   ),
                 ),
               ],
             )),
       );
 
-  Widget _categoriesList(RegistriesProvider provider) => Container(
-        margin: const EdgeInsets.only(top: 160),
-        alignment: Alignment.topCenter,
-        decoration: BoxDecoration(
-            boxShadow: const [
-              BoxShadow(
-                blurRadius: 10,
-                spreadRadius: 0,
-                blurStyle: BlurStyle.outer,
-                offset: Offset(0, -1),
-                color: Colors.white,
-              )
-            ],
-            color: AppColors.secundaryColor,
-            borderRadius: BorderRadius.circular(25)),
-        padding: const EdgeInsets.all(15),
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: provider.categories!.length,
-          itemBuilder: (context, categoryIndex) =>
-              closedCategoryWidget(provider, categoryIndex),
-        ),
+  Widget _categoriesList(RegistriesProvider provider) => Column(
+        children: [
+          Container(
+              alignment: Alignment.bottomCenter,
+              height: 50,
+              child: Text(
+                'Grupos',
+                style: AppTextStyles.labelStyleLarge,
+              )),
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.only(top: 15),
+              alignment: Alignment.topCenter,
+              decoration: BoxDecoration(
+                  boxShadow: const [
+                    BoxShadow(
+                      blurRadius: 0,
+                      spreadRadius: 1,
+                      offset: Offset(0, -1),
+                      color: AppColors.primaryColorDark,
+                    )
+                  ],
+                  color: AppColors.backgroundColor,
+                  borderRadius: BorderRadius.circular(25)),
+              padding: const EdgeInsets.all(15),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: provider.categories.length,
+                itemBuilder: (context, categoryIndex) =>
+                    closedCategoryWidget(provider, categoryIndex),
+              ),
+            ),
+          ),
+        ],
       );
 
   @override
@@ -184,17 +206,32 @@ class _RegistriesPageState extends State<RegistriesPage>
                   const BoxDecoration(gradient: AppGradients.primaryColors),
               child: ValueListenableBuilder(
                   valueListenable: focusedCategoryIndex,
-                  builder: (context, value, child) => Center(
-                        child: AnimatedCrossFade(
-                            alignment: Alignment.topCenter,
-                            firstChild: _categoriesList(provider),
-                            secondChild: openedCategoryWidget(
-                                provider, focusedCategoryIndex.value),
-                            crossFadeState: focusedCategoryIndex.value != null
-                                ? CrossFadeState.showSecond
-                                : CrossFadeState.showFirst,
-                            duration: const Duration(milliseconds: 500)),
-                      )))
+                  builder: (context, value, child) => AnimatedCrossFade(
+                      layoutBuilder:
+                          (topChild, topChildKey, bottomChild, bottomChildKey) {
+                        return Stack(
+                          fit: StackFit.expand,
+                          alignment: Alignment.center,
+                          children: <Widget>[
+                            Positioned(
+                              key: bottomChildKey,
+                              child: bottomChild,
+                            ),
+                            Positioned(
+                              key: topChildKey,
+                              child: topChild,
+                            ),
+                          ],
+                        );
+                      },
+                      alignment: Alignment.topCenter,
+                      firstChild: _categoriesList(provider),
+                      secondChild: openedCategoryWidget(
+                          provider, focusedCategoryIndex.value),
+                      crossFadeState: focusedCategoryIndex.value != null
+                          ? CrossFadeState.showSecond
+                          : CrossFadeState.showFirst,
+                      duration: const Duration(milliseconds: 500))))
         },
       ),
     );

@@ -16,21 +16,22 @@ class RegistriesProvider extends ChangeNotifier {
   List<CategoryModel<RegistryModel>>? _sourceList;
   String? _errorMessage;
 
-  String _categoryFilter = '';
+  String _textFilter = '';
 
   RegistriesProvider(this._repository);
 
   RegistriesProviderStatus get status => _status;
   String? get errorMessage => _errorMessage;
-  List<CategoryModel<RegistryModel>>? get categories => _categoryFilter.isEmpty
-      ? _sourceList
-      : _sourceList
-              ?.where((item) => item.name.contains(_categoryFilter))
-              .toList() ??
-          [];
+  List<CategoryModel<RegistryModel>> get categories => _sourceList ?? [];
 
-  set categoryFilter(String value) {
-    _categoryFilter = value;
+  List<RegistryModel> getCategoryItems(int categoryIndex) => 
+    _textFilter.isEmpty ?
+      _sourceList![categoryIndex].items :
+      _sourceList![categoryIndex].items.where((e) => e.description.contains(_textFilter)).toList();
+
+
+  set textFilter(String value) {
+    _textFilter = value;
     notifyListeners();
   }
 

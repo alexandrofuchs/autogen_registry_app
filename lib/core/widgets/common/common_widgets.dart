@@ -233,15 +233,14 @@ mixin CommonWidgets {
             Container(
               margin: const EdgeInsets.only(right: 5),
               decoration: BoxDecoration(
-                color: AppColors.primaryColorDark,
+                color: AppColors.secundaryColor,
                 borderRadius: BorderRadius.circular(5),
               ),
             ),
             Flexible(
                 child: Text(
               text,
-              style: AppTextStyles.bodyStyleLarge
-                  .copyWith(fontWeight: FontWeight.w300),
+              style: AppTextStyles.labelStyleMedium,
               softWrap: true,
             )),
           ],

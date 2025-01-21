@@ -28,7 +28,7 @@ mixin SearchbarWidget {
                 onChanged: onTextChange,
                 decoration: const InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'search',
+                    hintText: 'pesquisar',
                     hintStyle: AppTextStyles.titleStyleMedium,
                     labelStyle: AppTextStyles.titleStyleMedium),
               ),

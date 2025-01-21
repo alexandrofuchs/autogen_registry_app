@@ -40,8 +40,7 @@ class _NewRegistryPageState extends State<NewRegistryPage>
       'Nova categoria',
       ...context
           .read<RegistriesProvider>()
-          .categories!
-          .map<String>((e) => e.name)
+          .categories.map<String>((e) => e.name)
     ];
 
     _fileTypeOptions = RegistryType.values.map((e) => e.value).toList();
