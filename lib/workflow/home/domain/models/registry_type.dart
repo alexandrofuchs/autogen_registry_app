@@ -17,4 +17,9 @@ enum RegistryType {
 
   static RegistryType? fromStringOrNull(String value) =>
       RegistryType.values.firstWhereOrNull((e) => e.value == value);
+  
+  @override
+  String toString(){
+    return value; 
+  }
 }

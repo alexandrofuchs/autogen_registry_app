@@ -6,7 +6,7 @@ abstract class AppSnackbars {
           String message, Color color) =>
       SnackBar(
         margin: const EdgeInsets.only(left: 8, right: 8, bottom: 30),
-        backgroundColor: AppColors.orangeDark,
+        backgroundColor: color,
         duration: duration,
         shape: const BeveledRectangleBorder(borderRadius: BorderRadius.zero),
         behavior: SnackBarBehavior.floating,
@@ -17,9 +17,9 @@ abstract class AppSnackbars {
           },
           child: Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.cancel_rounded,
-                color: color,
+                color: AppColors.secundaryColor,
                 size: 24,
               ),
               Flexible(
