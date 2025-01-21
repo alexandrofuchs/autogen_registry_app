@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:plain_registry_app/core/theme/app_colors.dart';
+import 'package:plain_registry_app/core/theme/app_gradients.dart';
 import 'package:plain_registry_app/core/theme/app_text_styles.dart';
 import 'package:plain_registry_app/core/widgets/appbar/appbar_widgets.dart';
 import 'package:plain_registry_app/workflow/home/domain/models/loaded_file.dart';
@@ -39,7 +40,6 @@ class _MediaHomeState extends State<MediaHomePage>
         itemType = RegistryType.video;
         break;
     }
-
   }
 
   Widget button(IconData icon, String label, Function() action) => Container(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plain_registry_app/core/theme/app_colors.dart';
+import 'package:plain_registry_app/core/theme/app_gradients.dart';
 import 'package:plain_registry_app/core/theme/app_text_styles.dart';
 
 mixin CommonWidgets {
@@ -151,8 +152,8 @@ mixin CommonWidgets {
         ),
       );
 
-  Widget actionButton(String label, Function() action, bool enable) => Align(
-        alignment: Alignment.centerRight,
+  Widget positiveActionButton(String label, Function() action, {bool enable = true}) => Align(
+        alignment: Alignment.center,
         child: GestureDetector(
           onTap: enable ? action : null,
           child: Container(
@@ -160,18 +161,20 @@ mixin CommonWidgets {
             decoration: const BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.greenLight,
+                  color: AppColors.primaryColorDark,
                   offset: Offset(0, 2),
                   spreadRadius: 0,
                   blurRadius: 2,
                 )
               ],
-              gradient: AppGradients.actionColors,
+              gradient: AppGradients.positiveActionColors,
               borderRadius: BorderRadius.only(
+                topRight: Radius.circular(0),
+                bottomRight: Radius.circular(0),
                   topLeft: Radius.circular(10),
                   bottomLeft: Radius.circular(10)),
             ),
-            padding: const EdgeInsets.only(left: 15),
+            padding: const EdgeInsets.only(left: 8),
             width: 150,
             height: 50,
             child: Text(
@@ -185,6 +188,42 @@ mixin CommonWidgets {
           ),
         ),
       );
+
+   Widget negativeActionButton(String label, Function() action, {bool enable = true}) => Align(
+        alignment: Alignment.center,
+        child: GestureDetector(
+          onTap: enable ? action : null,
+          child: Container(
+            alignment: Alignment.centerRight,
+            decoration: const BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryColorDark,
+                  offset: Offset(0, 2),
+                  spreadRadius: 0,
+                  blurRadius: 2,
+                )
+              ],
+              gradient: AppGradients.negativeActionColors,
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(10),
+                bottomRight: Radius.circular(10),
+                  topLeft: Radius.circular(0),
+                  bottomLeft: Radius.circular(0)),
+            ),
+            padding: const EdgeInsets.only(right: 8),
+            width: 150,
+            height: 50,
+            child: Text(
+              label,
+              style: AppTextStyles.labelStyleLarge.copyWith(
+                  color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+      
 
   Widget titleDot(String text) => SizedBox(
         height: 50,
