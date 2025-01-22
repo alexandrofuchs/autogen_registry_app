@@ -26,6 +26,7 @@ dependencies:
   path_provider: ^2.1.5
   mime: ^2.0.0
   video_player: ^2.9.2
+  flutter_markdown: ^0.7.5
 
 dev_dependencies:
   flutter_test:
@@ -37,9 +38,9 @@ flutter:
 
   uses-material-design: true
 
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - mocks/
+    # - images/a_dot_ham.jpeg
 
   # fonts:
   #   - family: Schyler

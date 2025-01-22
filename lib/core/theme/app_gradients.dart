@@ -11,6 +11,16 @@ abstract class AppGradients {
     end: Alignment.bottomCenter,
   );
 
+  static const LinearGradient actionColors = LinearGradient(
+    colors: [
+      AppColors.primaryColorLight,
+      AppColors.primaryColor,
+    ],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
+
+
   static const LinearGradient positiveActionColors = LinearGradient(
     colors: [
       AppColors.greenLight,

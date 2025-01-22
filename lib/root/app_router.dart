@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 abstract class AppRouter {
-  static Route createRoute(Widget page) {
+  static Route<T> createRoute<T>(Widget page) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

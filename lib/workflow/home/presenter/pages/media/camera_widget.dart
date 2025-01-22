@@ -183,13 +183,15 @@ class _CameraWidgetState extends State<CameraWidget> with CommonWidgets {
           videoFile != null
               ? Flexible(child: VideoPlayerWidget(file: File(videoFile!.path)))
               : imageFile != null
-                  ? Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white, width: 2)),
-                      child: Image.file(
-                        File(imageFile!.path),
-                        fit: BoxFit.fitHeight,
-                      ))
+                  ? Flexible(
+                    child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white, width: 2)),
+                        child: Image.file(
+                          File(imageFile!.path),
+                          fit: BoxFit.fill,
+                        )),
+                  )
                   : const SizedBox(),
           const SizedBox(
             height: 15,

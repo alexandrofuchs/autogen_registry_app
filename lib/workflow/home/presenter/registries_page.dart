@@ -9,7 +9,7 @@ import 'package:plain_registry_app/core/widgets/searchbar/searchbar_widget.dart'
 import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
 import 'package:plain_registry_app/workflow/home/presenter/pages/new_registry_page.dart';
 import 'package:plain_registry_app/workflow/home/presenter/providers/registries_provider.dart';
-import 'package:plain_registry_app/workflow/root/app_router.dart';
+import 'package:plain_registry_app/root/app_router.dart';
 import 'package:provider/provider.dart';
 
 class RegistriesPage extends StatefulWidget {
@@ -47,7 +47,7 @@ class _RegistriesPageState extends State<RegistriesPage>
                   value: context.read<RegistriesProvider>(),
                   child: const NewRegistryPage())));
         },
-        child: headerContainer('Adicionar novo arquivo'),
+        child: titleContainer('Adicionar novo arquivo'),
       );
 
   Widget openedCategoryWidget(
@@ -149,13 +149,7 @@ class _RegistriesPageState extends State<RegistriesPage>
 
   Widget _categoriesList(RegistriesProvider provider) => Column(
         children: [
-          Container(
-              alignment: Alignment.bottomCenter,
-              height: 50,
-              child: Text(
-                'Grupos',
-                style: AppTextStyles.labelStyleLarge,
-              )),
+          pageHeader('Grupos'),
           Expanded(
             child: Container(
               margin: const EdgeInsets.only(top: 15),
