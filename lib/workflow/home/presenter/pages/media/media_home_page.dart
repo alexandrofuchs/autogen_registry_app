@@ -101,7 +101,7 @@ class _MediaHomeState extends State<MediaHomePage>
   Widget itemInfos() => Padding(
         padding: const EdgeInsets.all(25),
         child: Column(children: [
-          infoRow('grupo', widget.model.category),
+          infoRow('grupo', widget.model.group),
           infoRow('descrição', widget.model.description),
           infoRow('nome do arquivo', widget.model.filename),
           infoRow('tipo do arquivo', widget.model.type.toString()),

@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:plain_registry_app/core/helpers/formatters/datetime_formatters.dart';
 import 'package:plain_registry_app/core/theme/app_colors.dart';
 import 'package:plain_registry_app/core/theme/app_gradients.dart';
-import 'package:plain_registry_app/core/theme/app_text_styles.dart';
 import 'package:plain_registry_app/core/widgets/appbar/appbar_widgets.dart';
 import 'package:plain_registry_app/core/widgets/searchbar/searchbar_widget.dart';
 import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
 import 'package:plain_registry_app/workflow/home/presenter/pages/new_registry_page.dart';
-import 'package:plain_registry_app/workflow/home/presenter/providers/registries_provider.dart';
+import 'package:plain_registry_app/workflow/home/presenter/providers/registry_groups_provider.dart';
 import 'package:plain_registry_app/root/app_router.dart';
 import 'package:provider/provider.dart';
 
@@ -21,11 +18,11 @@ class RegistriesPage extends StatefulWidget {
 
 class _RegistriesPageState extends State<RegistriesPage>
     with SearchbarWidget, AppbarWidgets, CommonWidgets {
-  final ValueNotifier<int?> focusedCategoryIndex = ValueNotifier(null);
+  final ValueNotifier<int?> focusedGroupIndex = ValueNotifier(null);
 
   @override
   void initState() {
-    context.read<RegistriesProvider>().load();
+    context.read<RegistryGroupsProvider>().load();
     super.initState();
   }
 
@@ -43,82 +40,20 @@ class _RegistriesPageState extends State<RegistriesPage>
   Widget footer() => GestureDetector(
         onTap: () {
           Navigator.of(context).push(AppRouter.createRoute(
-              ChangeNotifierProvider<RegistriesProvider>.value(
-                  value: context.read<RegistriesProvider>(),
+              ChangeNotifierProvider<RegistryGroupsProvider>.value(
+                  value: context.read<RegistryGroupsProvider>(),
                   child: const NewRegistryPage())));
         },
         child: titleContainer('Adicionar novo arquivo'),
       );
 
-  Widget openedCategoryWidget(
-          RegistriesProvider provider, int? categoryIndex) =>
-      categoryIndex != null
-          ? Column(
-              children: [
-                Container(
-                    alignment: Alignment.bottomCenter,
-                    height: 50,
-                    margin: const EdgeInsets.only(top: 5, bottom: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        BackButton(
-                          onPressed: () {
-                            focusedCategoryIndex.value = null;
-                          },
-                          color: AppColors.secundaryColor,
-                          style: const ButtonStyle(
-                            iconSize: WidgetStatePropertyAll(24),
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            provider.categories[categoryIndex].name,
-                            style: AppTextStyles.labelStyleLarge,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    )),
-                searchBar((value) {
-                  context.read<RegistriesProvider>().textFilter = value;
-                }),
-                filterBar(),
+  Widget openedGroupWidget(RegistryGroupsProvider provider, int? groupIndex) =>
+      const SizedBox();
 
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 0),
-                    alignment: Alignment.topCenter,
-                    decoration: const BoxDecoration(
-                        color: AppColors.backgroundColor,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(25),
-                            topRight: Radius.circular(25))),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: provider.getCategoryItems(categoryIndex).length,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) => item(
-                              fileIcons[index],
-                              provider.getCategoryItems(categoryIndex)[index]
-                                  .description,
-                              '${provider.getCategoryItems(categoryIndex)[index].category} | ${provider.getCategoryItems(categoryIndex)[index].dateTime.toDaysNumberPast()}')
-                          .animate()
-                          .moveX(
-                              begin: -1000,
-                              end: 0,
-                              delay: Duration(milliseconds: 500 * index)),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : const SizedBox();
-
-  Widget closedCategoryWidget(RegistriesProvider provider, int categoryIndex) =>
+  Widget closedGroupWidget(RegistryGroupsProvider provider, int groupIndex) =>
       GestureDetector(
         onTap: () {
-          focusedCategoryIndex.value = categoryIndex;
+          focusedGroupIndex.value = groupIndex;
         },
         child: Container(
             margin: const EdgeInsets.only(top: 15),
@@ -133,8 +68,7 @@ class _RegistriesPageState extends State<RegistriesPage>
             padding: const EdgeInsets.only(left: 15, right: 15),
             child: Row(
               children: [
-                Expanded(
-                    child: titleDot(provider.categories[categoryIndex].name)),
+                Expanded(child: titleDot(provider.groups[groupIndex])),
                 const Padding(
                   padding: EdgeInsets.only(right: 15),
                   child: Icon(
@@ -147,7 +81,7 @@ class _RegistriesPageState extends State<RegistriesPage>
             )),
       );
 
-  Widget _categoriesList(RegistriesProvider provider) => Column(
+  Widget _groupList(RegistryGroupsProvider provider) => Column(
         children: [
           pageHeader('Grupos'),
           Expanded(
@@ -168,9 +102,9 @@ class _RegistriesPageState extends State<RegistriesPage>
               padding: const EdgeInsets.all(15),
               child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: provider.categories.length,
-                itemBuilder: (context, categoryIndex) =>
-                    closedCategoryWidget(provider, categoryIndex),
+                itemCount: provider.groups.length,
+                itemBuilder: (context, groupIndex) =>
+                    closedGroupWidget(provider, groupIndex),
               ),
             ),
           ),
@@ -187,7 +121,7 @@ class _RegistriesPageState extends State<RegistriesPage>
       persistentFooterAlignment: AlignmentDirectional.bottomCenter,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: footer(),
-      body: Consumer<RegistriesProvider>(
+      body: Consumer<RegistryGroupsProvider>(
         builder: (context, provider, child) => switch (provider.status) {
           RegistriesProviderStatus.loading => const Center(
               child: CircularProgressIndicator(),
@@ -199,7 +133,7 @@ class _RegistriesPageState extends State<RegistriesPage>
               decoration:
                   const BoxDecoration(gradient: AppGradients.primaryColors),
               child: ValueListenableBuilder(
-                  valueListenable: focusedCategoryIndex,
+                  valueListenable: focusedGroupIndex,
                   builder: (context, value, child) => AnimatedCrossFade(
                       layoutBuilder:
                           (topChild, topChildKey, bottomChild, bottomChildKey) {
@@ -219,10 +153,10 @@ class _RegistriesPageState extends State<RegistriesPage>
                         );
                       },
                       alignment: Alignment.topCenter,
-                      firstChild: _categoriesList(provider),
-                      secondChild: openedCategoryWidget(
-                          provider, focusedCategoryIndex.value),
-                      crossFadeState: focusedCategoryIndex.value != null
+                      firstChild: _groupList(provider),
+                      secondChild:
+                          openedGroupWidget(provider, focusedGroupIndex.value),
+                      crossFadeState: focusedGroupIndex.value != null
                           ? CrossFadeState.showSecond
                           : CrossFadeState.showFirst,
                       duration: const Duration(milliseconds: 500))))

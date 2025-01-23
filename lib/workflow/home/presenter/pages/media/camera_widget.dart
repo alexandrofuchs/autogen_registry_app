@@ -4,9 +4,10 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:plain_registry_app/core/helpers/extensions/list_extension.dart';
-import 'package:plain_registry_app/core/services/load_cameras.dart';
+import 'package:plain_registry_app/core/services/app_cameras.dart';
 import 'package:plain_registry_app/core/theme/app_colors.dart';
 import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
 import 'package:plain_registry_app/workflow/home/domain/models/loaded_file.dart';
@@ -65,7 +66,7 @@ class _CameraWidgetState extends State<CameraWidget> with CommonWidgets {
   void onInit() async {
     try {
       await Permission.camera.request();
-      controller = CameraController(cameras[0], ResolutionPreset.max);
+      controller = CameraController(GetIt.I.get<AppCameras>().cameras[0], ResolutionPreset.max);
       await controller.initialize();
 
       await Future.wait(<Future<Object?>>[
@@ -87,7 +88,7 @@ class _CameraWidgetState extends State<CameraWidget> with CommonWidgets {
             .then((double value) => _minAvailableZoom = value),
       ]);
 
-      isBackCamera.value = cameras[0].lensDirection == CameraLensDirection.back;
+      isBackCamera.value = GetIt.I.get<AppCameras>().cameras[0].lensDirection == CameraLensDirection.back;
 
       setState(() {
         isReady = true;
@@ -334,10 +335,10 @@ class _CameraWidgetState extends State<CameraWidget> with CommonWidgets {
                       onPressed: () {
                         late CameraDescription? camera;
                         if (isBackCamera.value) {
-                          camera = cameras.firstWhereOrNull((e) =>
+                          camera = GetIt.I.get<AppCameras>().cameras.firstWhereOrNull((e) =>
                               e.lensDirection == CameraLensDirection.front);
                         } else {
-                          camera = cameras.firstWhereOrNull((e) =>
+                          camera = GetIt.I.get<AppCameras>().cameras.firstWhereOrNull((e) =>
                               e.lensDirection == CameraLensDirection.back);
                         }
 

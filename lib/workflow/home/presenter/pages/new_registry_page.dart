@@ -10,7 +10,7 @@ import 'package:plain_registry_app/workflow/home/domain/models/registry_model.da
 import 'package:plain_registry_app/workflow/home/presenter/pages/chat/chat_page.dart';
 import 'package:plain_registry_app/workflow/home/presenter/pages/chat/chat_provider.dart';
 import 'package:plain_registry_app/workflow/home/presenter/pages/media/media_home_page.dart';
-import 'package:plain_registry_app/workflow/home/presenter/providers/registries_provider.dart';
+import 'package:plain_registry_app/workflow/home/presenter/providers/registry_groups_provider.dart';
 import 'package:plain_registry_app/root/app_router.dart';
 import 'package:provider/provider.dart';
 
@@ -25,32 +25,31 @@ class _NewRegistryPageState extends State<NewRegistryPage>
     with CommonWidgets, AppbarWidgets {
   late final List<String> _fileTypeOptions;
 
-  late final List<String> _categories;
+  late final List<String> _groups;
 
-  late final ValueNotifier<int> _selectedCategoryIndex;
+  late final ValueNotifier<int> _selectedGroupIndex;
   late final ValueNotifier<int> _selectedFileTypeIndex;
 
   late final TextEditingController _descriptionController;
   late final TextEditingController _filenameController;
-  late final TextEditingController _categoryController;
+  late final TextEditingController _groupController;
 
   @override
   void initState() {
-    _selectedCategoryIndex = ValueNotifier(0);
+    _selectedGroupIndex = ValueNotifier(0);
     _selectedFileTypeIndex = ValueNotifier(0);
 
-    _categories = [
-      'Selecione uma categoria...',
-      'Nova categoria',
+    _groups = [
+      'Selecione um grupo...',
+      'Novo grupo',
       ...context
-          .read<RegistriesProvider>()
-          .categories
-          .map<String>((e) => e.name)
+          .read<RegistryGroupsProvider>()
+          .groups
     ];
 
     _fileTypeOptions = RegistryType.values.map((e) => e.value).toList();
 
-    _categoryController = TextEditingController();
+    _groupController = TextEditingController();
     _filenameController = TextEditingController();
     _descriptionController = TextEditingController();
 
@@ -60,22 +59,22 @@ class _NewRegistryPageState extends State<NewRegistryPage>
   @override
   void dispose() {
     _selectedFileTypeIndex.dispose();
-    _selectedCategoryIndex.dispose();
+    _selectedGroupIndex.dispose();
     _descriptionController.dispose();
-    _categoryController.dispose();
+    _groupController.dispose();
     _filenameController.dispose();
     super.dispose();
   }
 
   void validateAndCreateFileAction() {
 
-    if(_selectedCategoryIndex.value == 0){
-      AppSnackbars.showErrorSnackbar(context, 'Selecione ou crie uma categoria');
+    if(_selectedGroupIndex.value == 0){
+      AppSnackbars.showErrorSnackbar(context, 'Selecione ou crie um grupo');
       return;
     }
 
     if (![
-      _categoryController.text.isNotEmpty,
+      _groupController.text.isNotEmpty,
       _filenameController.text.isNotEmpty,
       _descriptionController.text.isNotEmpty,
     ].every((e) => e)) {
@@ -87,10 +86,12 @@ class _NewRegistryPageState extends State<NewRegistryPage>
     late RegistryType itemType =
         RegistryType.fromString(_fileTypeOptions[_selectedFileTypeIndex.value]);
 
-    final item = RegistryModel(
+    final item = RegistryModel<String>(
+        id: 0,
+        data: '',
         filename: _filenameController.text,
         description: _descriptionController.text,
-        category: _categoryController.text,
+        group: _groupController.text,
         dateTime: DateTime.now(),
         type: itemType);
 
@@ -111,7 +112,7 @@ class _NewRegistryPageState extends State<NewRegistryPage>
       case RegistryType.text:
         Navigator.push(context, AppRouter.createRoute(
           ChangeNotifierProvider(create: (context) => ChatProvider()..loadData(),
-          child: ChatPage())));
+          child: const ChatPage())));
         break;
     }
   }
@@ -165,10 +166,10 @@ class _NewRegistryPageState extends State<NewRegistryPage>
         ),
       );
 
-  Widget categoryTextField() => ValueListenableBuilder(
-      valueListenable: _selectedCategoryIndex,
+  Widget groupTextField() => ValueListenableBuilder(
+      valueListenable: _selectedGroupIndex,
       builder: (context, value, child) => value == 1
-          ? textField('nome da categoria', _categoryController)
+          ? textField('nome do grupo', _groupController)
           : const SizedBox());
 
   @override
@@ -201,15 +202,15 @@ class _NewRegistryPageState extends State<NewRegistryPage>
                 child: ListView(
                   shrinkWrap: true,
                   children: [
-                    selectFields(_categories, _selectedCategoryIndex, (value){
-                      _selectedCategoryIndex.value = value;
+                    selectFields(_groups, _selectedGroupIndex, (value){
+                      _selectedGroupIndex.value = value;
                       if(value < 2){
-                        _categoryController.text = '';
+                        _groupController.text = '';
                         return;
                       }
-                      _categoryController.text = _categories[value];
+                      _groupController.text = _groups[value];
                     }),
-                    categoryTextField(),
+                    groupTextField(),
                     textField('nome do arquivo', _filenameController),
                     textField('descrição', _descriptionController),
                     selectFields(RegistryType.values, _selectedFileTypeIndex,(value){
