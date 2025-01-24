@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:plain_registry_app/core/common/text_input/text_input_validator.dart';
+import 'package:plain_registry_app/core/common/text_input/text_input_builder.dart';
 import 'package:plain_registry_app/core/theme/app_colors.dart';
 import 'package:plain_registry_app/core/theme/app_gradients.dart';
 import 'package:plain_registry_app/core/theme/app_text_styles.dart';
@@ -31,9 +33,9 @@ class _NewRegistryPageState extends State<NewRegistryPage>
   late final ValueNotifier<int> _selectedGroupIndex;
   late final ValueNotifier<int> _selectedFileTypeIndex;
 
-  late final TextEditingController _descriptionController;
-  late final TextEditingController _filenameController;
-  late final TextEditingController _groupController;
+  late final TextInputValidator _descriptionTextInput;
+  late final TextInputValidator _filenameTextInput;
+  late final TextInputValidator _groupTextInput;
 
   @override
   void initState() {
@@ -50,9 +52,9 @@ class _NewRegistryPageState extends State<NewRegistryPage>
 
     _fileTypeOptions = RegistryType.values.map((e) => e.value).toList();
 
-    _groupController = TextEditingController();
-    _filenameController = TextEditingController();
-    _descriptionController = TextEditingController();
+    _groupTextInput = TextInputValidator();
+    _filenameTextInput = TextInputValidator();
+    _descriptionTextInput = TextInputValidator();
 
     super.initState();
   }
@@ -61,9 +63,9 @@ class _NewRegistryPageState extends State<NewRegistryPage>
   void dispose() {
     _selectedFileTypeIndex.dispose();
     _selectedGroupIndex.dispose();
-    _descriptionController.dispose();
-    _groupController.dispose();
-    _filenameController.dispose();
+    _descriptionTextInput.dispose();
+    _groupTextInput.dispose();
+    _filenameTextInput.dispose();
     super.dispose();
   }
 
@@ -74,9 +76,12 @@ class _NewRegistryPageState extends State<NewRegistryPage>
       return;
     }
 
+    _descriptionTextInput.hasError = _descriptionTextInput.text.isEmpty;
+    _groupTextInput.hasError = _groupTextInput.text.isEmpty;
+
     if (![
-      _groupController.text.isNotEmpty,
-      _descriptionController.text.isNotEmpty,
+      _groupTextInput.controller.text.isNotEmpty,
+      _descriptionTextInput.controller.text.isNotEmpty,
     ].every((e) => e)) {
       AppSnackbars.showErrorSnackbar(
           context, 'preencha todos os campos corretamente');
@@ -92,8 +97,8 @@ class _NewRegistryPageState extends State<NewRegistryPage>
         contentData: null,
         contentName: null,
         contentType: itemType,
-        description: _descriptionController.text,
-        group: _groupController.text,
+        description: _descriptionTextInput.controller.text,
+        group: _groupTextInput.controller.text,
         dateTime: DateTime.now(),
         );
 
@@ -171,7 +176,11 @@ class _NewRegistryPageState extends State<NewRegistryPage>
   Widget groupTextField() => ValueListenableBuilder(
       valueListenable: _selectedGroupIndex,
       builder: (context, value, child) => value == 1
-          ? textField('Nome do grupo...', _groupController)
+          ? TextInputBuilder(
+            label: 'Nome do grupo...', 
+            inputValidator:  _groupTextInput,
+            errorText: 'Informe o nome do grupo',
+            )
           : const SizedBox());
 
   @override
@@ -210,13 +219,18 @@ class _NewRegistryPageState extends State<NewRegistryPage>
                     selectFields(_groups, _selectedGroupIndex, (value){
                       _selectedGroupIndex.value = value;
                       if(value < 2){
-                        _groupController.text = '';
+                        _groupTextInput.text = '';
                         return;
                       }
-                      _groupController.text = _groups[value];
+                      _groupTextInput.text = _groups[value];
                     }),
                     groupTextField(),
-                    textField('Uma breve descrição...', _descriptionController, maxLength: 50),
+                    TextInputBuilder(
+                      label: 'Uma breve descrição...', 
+                      errorText: 'Descreva o registro',
+                      inputValidator: _descriptionTextInput, 
+                      maxLength: 50,
+                    ),
                    
                     const SizedBox(height: 15),
                   ])),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get_it/get_it.dart';
+import 'package:plain_registry_app/core/common/text_input/text_input_validator.dart';
+import 'package:plain_registry_app/core/common/text_input/text_input_builder.dart';
 import 'package:plain_registry_app/core/theme/app_colors.dart';
 import 'package:plain_registry_app/core/theme/app_gradients.dart';
 import 'package:plain_registry_app/core/theme/app_text_styles.dart';
@@ -26,8 +28,8 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> with CommonWidgets {
   final _textMessageController = TextMessageController(GetIt.I.get());
 
-  final _instructionController = TextEditingController();
-  final _contentController = TextEditingController();
+  final _instructionController = TextInputValidator();
+  final _contentController = TextInputValidator();
 
   @override
   initState() {
@@ -46,10 +48,16 @@ class _ChatPageState extends State<ChatPage> with CommonWidgets {
 
   Widget initChat() => ListView(
         children: [
-          textField('Digite uma instrução especifica', _instructionController,
+          TextInputBuilder(
+            errorText: '',
+            label: 'Digite uma instrução especifica',
+            
+            inputValidator: _instructionController,
               maxLength: 30),
-          textField(
-              'Digite o conteúdo ou contexto da instrução', _contentController,
+          TextInputBuilder(
+            label: 'Digite o conteúdo ou contexto da instrução', 
+            inputValidator: _contentController,
+            errorText: '',
               maxLength: 200, maxLines: 3),
           Container(
             margin: const EdgeInsets.all(15),
@@ -67,7 +75,7 @@ class _ChatPageState extends State<ChatPage> with CommonWidgets {
                         style: AppTextStyles.labelStyleMedium
                             .copyWith(fontWeight: FontWeight.bold)),
                     ValueListenableBuilder(
-                        valueListenable: _instructionController,
+                        valueListenable: _instructionController.controller,
                         builder: (context, value, child) => 
                             value.text.isEmpty ? const SizedBox() :
                             Text(
@@ -75,7 +83,7 @@ class _ChatPageState extends State<ChatPage> with CommonWidgets {
                             style: AppTextStyles.labelStyleMedium
                                 .copyWith(fontWeight: FontWeight.w500))),
                     ValueListenableBuilder(
-                        valueListenable: _contentController,
+                        valueListenable: _contentController.controller,
                         builder: (context, value, child) => 
                           value.text.isEmpty ? const SizedBox() : Text(
                             
