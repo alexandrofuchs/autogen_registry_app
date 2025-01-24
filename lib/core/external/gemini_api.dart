@@ -26,9 +26,9 @@ class GeminiApi {
 
   Future<dynamic> generateText(Map<String, dynamic> content) async {
     try {
-      // var response = await http.post(_baseURI, body: content);
+      // var response = await http.post(_baseURI, body: jsonEncode(content));
       // print('Response status: ${response.statusCode}');
-      // print('Response body: ${response.body}');
+      // return jsonDecode(response.body);
       return {
         "candidates": [
           {

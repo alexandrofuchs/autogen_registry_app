@@ -6,9 +6,14 @@ import 'package:plain_registry_app/workflow/chat/domain/i_services/i_text_messag
 class TextMessageController {
   final ITextMessageService _service;
 
-  StreamController<List<TextMessage>> _controller = StreamController.broadcast();
+  final _streamController = StreamController<List<TextMessage>>(
+    onPause: () => print('Paused'),
+    onResume: () => print('Resumed'),
+    onCancel: () => print('Cancelled'),
+    onListen: () => print('Listens'),
+  );
 
-  Stream<List<TextMessage>> get onNewMessage => _controller.stream;
+  Stream<List<TextMessage>> get onNewMessage => _streamController.stream;
 
   TextMessageController(this._service);
 
@@ -16,12 +21,12 @@ class TextMessageController {
     final response = await _service.generateAnswer(historical);
 
     response.resolve(
-        onFail: (err) {}, onSuccess: (data) => _controller.add(
-          List.from(historical)..add(data),
+        onFail: (err) {}, onSuccess: (data) => 
+          _streamController.add(List.from(historical)..add(data),
         ));
   }
 
   void dispose(){
-    _controller.close();
+    _streamController.close();
   }
 }

@@ -18,6 +18,6 @@ extension MessagesApiAdapter on List<TextMessage> {
                   "text": e.text,
                 }
               ]
-            })
+            }).toList()
       };
 }

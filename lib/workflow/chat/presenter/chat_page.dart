@@ -8,6 +8,7 @@ import 'package:plain_registry_app/core/theme/app_text_styles.dart';
 import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
 import 'package:plain_registry_app/workflow/chat/domain/models/chat.dart';
 import 'package:plain_registry_app/workflow/chat/domain/models/text_message.dart';
+import 'package:plain_registry_app/workflow/chat/domain/models/new_text_message_model.dart';
 import 'package:plain_registry_app/workflow/chat/presenter/chat_provider.dart';
 import 'package:plain_registry_app/workflow/chat/presenter/text_message_provider.dart';
 import 'package:plain_registry_app/workflow/home/domain/models/registry_model.dart';
@@ -25,25 +26,105 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> with CommonWidgets {
   final _textMessageController = TextMessageController(GetIt.I.get());
 
+  final _instructionController = TextEditingController();
+  final _contentController = TextEditingController();
+
   @override
   initState() {
-    context.read<ChatProvider>().saveChat(Chat(
-        id: widget.registry.id,
-        contentName: widget.registry.contentName,
-        contentType: widget.registry.contentType,
-        topic: widget.registry.topic,
-        dateTime: widget.registry.dateTime,
-        description: widget.registry.description,
-        group: widget.registry.group,
-        contentData: []));
     super.initState();
   }
 
   @override
   dispose() {
     _textMessageController.dispose();
+    _instructionController.dispose();
+    _contentController.dispose();
     super.dispose();
   }
+
+  Widget loadingChat() => const Center(child: CircularProgressIndicator());
+
+  Widget initChat() => ListView(
+        children: [
+          textField('Digite uma instrução especifica', _instructionController,
+              maxLength: 30),
+          textField(
+              'Digite o conteúdo ou contexto da instrução', _contentController,
+              maxLength: 200, maxLines: 3),
+          Container(
+            margin: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: AppColors.primaryColorDark,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(25),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Seu texto:\n',
+                        style: AppTextStyles.labelStyleMedium
+                            .copyWith(fontWeight: FontWeight.bold)),
+                    ValueListenableBuilder(
+                        valueListenable: _instructionController,
+                        builder: (context, value, child) => 
+                            value.text.isEmpty ? const SizedBox() :
+                            Text(
+                            '${value.text}: ',
+                            style: AppTextStyles.labelStyleMedium
+                                .copyWith(fontWeight: FontWeight.w500))),
+                    ValueListenableBuilder(
+                        valueListenable: _contentController,
+                        builder: (context, value, child) => 
+                          value.text.isEmpty ? const SizedBox() : Text(
+                            
+                            '${value.text}.',
+                            style: AppTextStyles.labelStyleMedium.copyWith(
+                                fontWeight: FontWeight.w500,
+                                fontStyle: FontStyle.italic))),
+                  ]),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              negativeActionButton('Cancelar', () {}),
+              positiveActionButton('Iniciar conversa', () async {
+                final messages = [
+                  NewTextMessageModel(
+                      sender: MessageSender.user, text: "${_instructionController.text}: ${_contentController.text}" )
+                ];
+
+                await context.read<ChatProvider>().saveChat(Chat(
+                    id: widget.registry.id,
+                    contentName: widget.registry.contentName,
+                    contentType: widget.registry.contentType,
+                    topic: widget.registry.topic,
+                    dateTime: widget.registry.dateTime,
+                    description: widget.registry.description,
+                    group: widget.registry.group,
+                    contentData: messages));
+
+                _textMessageController.generateAnswer(messages);
+              }),
+            ],
+          )
+        ],
+      );
+
+  Widget loadedChat() => StreamBuilder<List<TextMessage>>(
+      stream: _textMessageController.onNewMessage,
+      builder: (context, snapshot) => snapshot.data != null
+          ? ListView.builder(
+              shrinkWrap: true,
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) =>
+                  switch (snapshot.data![index].sender) {
+                    MessageSender.ia => iaText(snapshot.data![index]),
+                    MessageSender.user => userText(snapshot.data![index]),
+                  })
+          : const SizedBox());
 
   Widget _markdownWidget(String text) => Markdown(
       shrinkWrap: true,
@@ -128,68 +209,10 @@ class _ChatPageState extends State<ChatPage> with CommonWidgets {
         child: Selector<ChatProvider, ChatProviderStatus>(
             selector: (context, provider) => provider.status,
             builder: (context, status, child) => switch (status) {
-                  ChatProviderStatus.loading => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ChatProviderStatus.loaded => StreamBuilder<List<TextMessage>>(
-                      stream: _textMessageController.onNewMessage,
-                      builder: (context, snapshot) => snapshot.data != null
-                          ? ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) =>
-                                  switch (snapshot.data![index].sender) {
-                                    MessageSender.ia =>
-                                      iaText(snapshot.data![index]),
-                                    MessageSender.user =>
-                                      userText(snapshot.data![index]),
-                                  })
-                          : const SizedBox()),
-                  ChatProviderStatus.notFound => ListView(
-                      children: [
-                        textField(
-                            'Digite uma instrução', TextEditingController(),
-                            maxLength: 30),
-                        textField('Digite o conteúdo ou contexto da instrução',
-                            TextEditingController(),
-                            maxLength: 200, maxLines: 3),
-                        Container(
-                          margin: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: AppColors.primaryColorDark,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(25),
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Template:\n',
-                                      style: AppTextStyles.labelStyleMedium
-                                          .copyWith(
-                                              fontWeight: FontWeight.bold)),
-                                  Text('Analise minha frase em inglês: ',
-                                      style: AppTextStyles.labelStyleMedium
-                                          .copyWith(
-                                              fontWeight: FontWeight.w500)),
-                                  Text('The cat are on the table.',
-                                      style: AppTextStyles.labelStyleMedium
-                                          .copyWith(
-                                              fontWeight: FontWeight.w500,
-                                              fontStyle: FontStyle.italic)),
-                                ]),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            negativeActionButton('Cancelar', () {}),
-                            positiveActionButton('Iniciar conversa', () {}),
-                          ],
-                        )
-                      ],
-                    ),
+                  ChatProviderStatus.initial => initChat(),
+                  ChatProviderStatus.loading => loadingChat(),
+                  ChatProviderStatus.loaded => loadedChat(),
+                  ChatProviderStatus.notFound => const SizedBox()
                 }),
       );
 

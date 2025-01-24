@@ -2,7 +2,15 @@ part of 'chat_repository.dart';
 
 extension ChatLocalDbAdapter on Chat {
   Map<String, dynamic> toMap() =>
-      {'content_data': jsonEncode(messages.map((e) => e.toMap()).toList())};
+      {
+        'content_data': jsonEncode(messages.map((e) => e.toMap()).toList()),
+        'content_name': contentName,
+        'content_type': contentType.value,
+        'date_time': dateTime.toString(),
+        'description': description,
+        'content_group': group,
+        'topic': topic,
+      };
 
   static Chat fromMap(Map<String, dynamic> map, {int? id}) => Chat(
         id: id ?? map['id'],

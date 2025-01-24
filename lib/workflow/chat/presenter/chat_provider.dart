@@ -3,6 +3,7 @@ import 'package:plain_registry_app/workflow/chat/domain/i_repositories/i_chat_re
 import 'package:plain_registry_app/workflow/chat/domain/models/chat.dart';
 
 enum ChatProviderStatus {
+  initial,
   loading,
   notFound,
   loaded,
@@ -11,7 +12,7 @@ enum ChatProviderStatus {
 class ChatProvider extends ChangeNotifier {
   final IChatRepository _repository;
 
-  ChatProviderStatus _status = ChatProviderStatus.loading;
+  ChatProviderStatus _status = ChatProviderStatus.initial;
 
   Chat? _chat;
 
