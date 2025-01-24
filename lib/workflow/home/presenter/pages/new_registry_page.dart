@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:plain_registry_app/core/theme/app_colors.dart';
 import 'package:plain_registry_app/core/theme/app_gradients.dart';
 import 'package:plain_registry_app/core/theme/app_text_styles.dart';
@@ -7,8 +8,8 @@ import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
 import 'package:plain_registry_app/core/widgets/snackbars/app_snackbars.dart';
 import 'package:plain_registry_app/workflow/home/domain/models/loaded_file.dart';
 import 'package:plain_registry_app/workflow/home/domain/models/registry_model.dart';
-import 'package:plain_registry_app/workflow/home/presenter/pages/chat/chat_page.dart';
-import 'package:plain_registry_app/workflow/home/presenter/pages/chat/chat_provider.dart';
+import 'package:plain_registry_app/workflow/chat/presenter/chat_page.dart';
+import 'package:plain_registry_app/workflow/chat/presenter/chat_provider.dart';
 import 'package:plain_registry_app/workflow/home/presenter/pages/media/media_home_page.dart';
 import 'package:plain_registry_app/workflow/home/presenter/providers/registry_groups_provider.dart';
 import 'package:plain_registry_app/root/app_router.dart';
@@ -75,7 +76,6 @@ class _NewRegistryPageState extends State<NewRegistryPage>
 
     if (![
       _groupController.text.isNotEmpty,
-      _filenameController.text.isNotEmpty,
       _descriptionController.text.isNotEmpty,
     ].every((e) => e)) {
       AppSnackbars.showErrorSnackbar(
@@ -86,14 +86,16 @@ class _NewRegistryPageState extends State<NewRegistryPage>
     late RegistryType itemType =
         RegistryType.fromString(_fileTypeOptions[_selectedFileTypeIndex.value]);
 
-    final item = RegistryModel<String>(
-        id: 0,
-        data: '',
-        filename: _filenameController.text,
+    final item = RegistryModel(
+        id: null,
+        topic: 'a',
+        contentData: null,
+        contentName: null,
+        contentType: itemType,
         description: _descriptionController.text,
         group: _groupController.text,
         dateTime: DateTime.now(),
-        type: itemType);
+        );
 
     switch (RegistryType.fromString(
         _fileTypeOptions[_selectedFileTypeIndex.value])) {
@@ -109,10 +111,10 @@ class _NewRegistryPageState extends State<NewRegistryPage>
         break;
       case RegistryType.audio:
         break;
-      case RegistryType.text:
+      case RegistryType.textGeneration:
         Navigator.push(context, AppRouter.createRoute(
-          ChangeNotifierProvider(create: (context) => ChatProvider()..loadData(),
-          child: const ChatPage())));
+          ChangeNotifierProvider(create: (context) => ChatProvider(GetIt.I.get()),
+          child: ChatPage(registry: item,))));
         break;
     }
   }
@@ -169,7 +171,7 @@ class _NewRegistryPageState extends State<NewRegistryPage>
   Widget groupTextField() => ValueListenableBuilder(
       valueListenable: _selectedGroupIndex,
       builder: (context, value, child) => value == 1
-          ? textField('nome do grupo', _groupController)
+          ? textField('Nome do grupo...', _groupController)
           : const SizedBox());
 
   @override
@@ -202,6 +204,9 @@ class _NewRegistryPageState extends State<NewRegistryPage>
                 child: ListView(
                   shrinkWrap: true,
                   children: [
+                    selectFields(RegistryType.values, _selectedFileTypeIndex,(value){
+                      _selectedFileTypeIndex.value = value;
+                    }),
                     selectFields(_groups, _selectedGroupIndex, (value){
                       _selectedGroupIndex.value = value;
                       if(value < 2){
@@ -211,11 +216,8 @@ class _NewRegistryPageState extends State<NewRegistryPage>
                       _groupController.text = _groups[value];
                     }),
                     groupTextField(),
-                    textField('nome do arquivo', _filenameController),
-                    textField('descrição', _descriptionController),
-                    selectFields(RegistryType.values, _selectedFileTypeIndex,(value){
-                      _selectedFileTypeIndex.value = value;
-                    }),
+                    textField('Uma breve descrição...', _descriptionController, maxLength: 50),
+                   
                     const SizedBox(height: 15),
                   ])),
                     Padding(

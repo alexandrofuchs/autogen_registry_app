@@ -100,7 +100,10 @@ class _RegistriesPageState extends State<RegistriesPage>
                   color: AppColors.backgroundColor,
                   borderRadius: BorderRadius.circular(25)),
               padding: const EdgeInsets.all(15),
-              child: ListView.builder(
+              child: 
+              provider.groups.isEmpty ?
+                const Center(child: Text('Nenhum grupo criado'),) :
+              ListView.builder(
                 shrinkWrap: true,
                 itemCount: provider.groups.length,
                 itemBuilder: (context, groupIndex) =>
@@ -121,15 +124,17 @@ class _RegistriesPageState extends State<RegistriesPage>
       persistentFooterAlignment: AlignmentDirectional.bottomCenter,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: footer(),
-      body: Consumer<RegistryGroupsProvider>(
-        builder: (context, provider, child) => switch (provider.status) {
-          RegistriesProviderStatus.loading => const Center(
+      body: Selector<RegistryGroupsProvider, RegistryGroupsProviderStatus>(
+        
+        selector: (context, provider) => provider.status,
+        builder: (context, status, child) => switch (status) {
+          RegistryGroupsProviderStatus.loading => const Center(
               child: CircularProgressIndicator(),
             ),
-          RegistriesProviderStatus.failed => Center(
-              child: Text(provider.errorMessage!),
+          RegistryGroupsProviderStatus.failed => Center(
+              child: Text(context.read<RegistryGroupsProvider>().errorMessage!),
             ),
-          RegistriesProviderStatus.loaded => Container(
+          RegistryGroupsProviderStatus.loaded => Container(
               decoration:
                   const BoxDecoration(gradient: AppGradients.primaryColors),
               child: ValueListenableBuilder(
@@ -153,9 +158,8 @@ class _RegistriesPageState extends State<RegistriesPage>
                         );
                       },
                       alignment: Alignment.topCenter,
-                      firstChild: _groupList(provider),
-                      secondChild:
-                          openedGroupWidget(provider, focusedGroupIndex.value),
+                      firstChild: _groupList(context.read<RegistryGroupsProvider>()),
+                      secondChild: openedGroupWidget(context.read<RegistryGroupsProvider>(), focusedGroupIndex.value),
                       crossFadeState: focusedGroupIndex.value != null
                           ? CrossFadeState.showSecond
                           : CrossFadeState.showFirst,

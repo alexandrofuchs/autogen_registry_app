@@ -1,13 +1,14 @@
 abstract class RegistryDbModel{
   static const _tableName = 'Registries';
   static const List<String> _textFields = [
-    'id INTEGER PRIMARY KEY',
+    'id INTEGER PRIMARY KEY AUTOINCREMENT',
+    'topic TEXT NOT NULL',
+    'description TEXT NOT NULL',
     'content_name TEXT',
-    'content_data TEXT',
-    'content_type TEXT',
-    'content_group TEXT',
-    'description TEXT',
-    'date_time TEXT',
+    'content_data TEXT NOT NULL',
+    'content_type TEXT NOT NULL',
+    'content_group TEXT NOT NULL',
+    'date_time TEXT NOT NULL',
   ];
 
   static final String createTableCommand = 'CREATE TABLE IF NOT EXISTS $_tableName (${_textFields.join(', ')})';

@@ -165,16 +165,23 @@ mixin CommonWidgets {
         child: child,
       );
 
-  Widget textField(String label, TextEditingController controller) =>
+  Widget textField(String label, TextEditingController controller, {
+    int? maxLength,
+    int? maxLines,
+  }) =>
       fieldContainer(
         child: TextField(
           controller: controller,
           style: AppTextStyles.bodyStyleMedium,
+          maxLength: maxLength,
+          maxLines: maxLines,
           decoration: InputDecoration(
               border: InputBorder.none,
-              hintStyle: AppTextStyles.bodyStyleSmall,
+              hintStyle: AppTextStyles.bodyStyleMedium,
+              alignLabelWithHint: true,
               hintText: label,
-              contentPadding: const EdgeInsets.all(15)),
+              counterStyle: const TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.w700),
+              contentPadding: const EdgeInsets.only(left: 30, right: 30, top: 15)),
         ),
       );
 

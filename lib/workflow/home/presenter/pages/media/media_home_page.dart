@@ -103,8 +103,8 @@ class _MediaHomeState extends State<MediaHomePage>
         child: Column(children: [
           infoRow('grupo', widget.model.group),
           infoRow('descrição', widget.model.description),
-          infoRow('nome do arquivo', widget.model.filename),
-          infoRow('tipo do arquivo', widget.model.type.toString()),
+          infoRow('nome do arquivo', widget.model.contentName ?? 'unnamed'),
+          infoRow('tipo do arquivo', widget.model.contentType.toString()),
         ]),
       );
 

@@ -5,8 +5,8 @@ extension RegistriesAdapter on RegistryModel<String>{
     'group': group,
     'date_time': dateTime,
     'description': description,
-    'content_name':  filename,
-    'content_type': type.value,
-    'content_data': jsonEncode(data),
+    'content_name':  contentName,
+    'content_type': contentType.value,
+    'content_data': jsonEncode(contentData),
   };
 }

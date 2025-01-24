@@ -1,3 +1,28 @@
 {
-    "content": "* **Ingredientes:** Farinha, açúcar, fermento, ovos, leite, manteiga derretida (opcional), sal.\n* **Mistura seca:** Misture farinha, açúcar, fermento e sal.\n* **Mistura úmida:** Bata os ovos, adicione o leite e a manteiga (se usar).\n* **Combine:** Junte as misturas seca e úmida, misturando até incorporar.  Não misture demais!\n* **Cozinhe:** Aqueça uma frigideira levemente untada em fogo médio. Despeje 1/4 xícara de massa por panqueca.\n* **Doure:** Cozinhe por 2-3 minutos de cada lado, ou até dourar.\n* **Sirva:** Sirva imediatamente com seus acompanhamentos favoritos (xarope de ácer, frutas, etc).\n"
+    "contents": [
+        {
+            "role": "user",
+            "parts": [
+                {
+                    "text": "Hello"
+                }
+            ]
+        },
+        {
+            "role": "model",
+            "parts": [
+                {
+                    "text": "Great to meet you. What would you like to know?"
+                }
+            ]
+        },
+        {
+            "role": "user",
+            "parts": [
+                {
+                    "text": "I have two dogs in my house. How many paws are in my house?"
+                }
+            ]
+        }
+    ]
 }

@@ -29,12 +29,13 @@ class RegistriesRepository implements IRegistriesRepository {
       final response = [
         RegistryModel<String>(
             id: 1,
-            filename: 'doc.pdf',
+            topic: 'Um estudo',
+            contentName: 'doc.pdf',
             description: 'Um arquivo pdf',
-            data: '',
+            contentData: '',
             group: 'estudos',
             dateTime: DateTime.now(),
-            type: RegistryType.document)
+            contentType: RegistryType.document)
       ];
 
       await Future.delayed(const Duration(seconds: 2));

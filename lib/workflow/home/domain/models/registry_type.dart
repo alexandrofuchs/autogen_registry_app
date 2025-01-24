@@ -5,7 +5,7 @@ enum RegistryType {
   video("video", ['video/mp4']),
   image("image", ['image/jpeg', 'image/png', 'image/gif']),
   audio("audio", ['audio/mp3, audio/wav']),
-  text("text", []);
+  textGeneration("text", []);
 
   const RegistryType(this.value, this.contentTypes);
 
