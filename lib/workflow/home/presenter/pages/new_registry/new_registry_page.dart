@@ -8,12 +8,10 @@ import 'package:plain_registry_app/core/theme/app_text_styles.dart';
 import 'package:plain_registry_app/core/widgets/appbar/appbar_widgets.dart';
 import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
 import 'package:plain_registry_app/core/widgets/snackbars/app_snackbars.dart';
-import 'package:plain_registry_app/workflow/home/domain/models/loaded_file.dart';
 import 'package:plain_registry_app/workflow/home/domain/models/registry_model.dart';
 import 'package:plain_registry_app/workflow/chat/presenter/chat_page.dart';
 import 'package:plain_registry_app/workflow/chat/presenter/chat_provider.dart';
-import 'package:plain_registry_app/workflow/home/presenter/pages/media/media_home_page.dart';
-import 'package:plain_registry_app/workflow/home/presenter/providers/registry_groups_provider.dart';
+import 'package:plain_registry_app/workflow/home/presenter/pages/groups/registry_groups_provider.dart';
 import 'package:plain_registry_app/root/app_router.dart';
 import 'package:provider/provider.dart';
 
@@ -107,19 +105,15 @@ class _NewRegistryPageState extends State<NewRegistryPage>
       case RegistryType.document:
         break;
       case RegistryType.video:
-        Navigator.push(
-            context, AppRouter.createRoute(MediaHomePage(model: item, mediaType: MediaType.video,)));
         break;
       case RegistryType.image:
-        Navigator.push(
-            context, AppRouter.createRoute(MediaHomePage(model: item, mediaType: MediaType.image,)));
         break;
       case RegistryType.audio:
         break;
       case RegistryType.textGeneration:
-        Navigator.push(context, AppRouter.createRoute(
-          ChangeNotifierProvider(create: (context) => ChatProvider(GetIt.I.get()),
-          child: ChatPage(registry: item,))));
+        // Navigator.push(context, AppRouter.createRoute(
+        //   ChangeNotifierProvider(create: (context) => ChatProvider(GetIt.I.get()),
+        //   child: ChatPage(registry: item,))));
         break;
     }
   }

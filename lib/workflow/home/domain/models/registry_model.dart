@@ -13,6 +13,8 @@ class RegistryModel<DataType extends dynamic> extends Equatable {
   final RegistryType contentType;
   final DataType contentData;
 
+  bool get hasId => id != null;
+
   const RegistryModel(
       {required this.id,
       required this.contentName,

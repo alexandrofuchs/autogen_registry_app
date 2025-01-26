@@ -1,7 +1,7 @@
 import 'package:plain_registry_app/workflow/chat/domain/models/text_message.dart';
 
 class SavedTextMessageModel extends TextMessage {
-  final int id;
+  final int? id;
   final int? replyToMessageId;
 
   const SavedTextMessageModel(

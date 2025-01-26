@@ -4,56 +4,38 @@ import 'package:plain_registry_app/core/theme/app_gradients.dart';
 import 'package:plain_registry_app/core/widgets/appbar/appbar_widgets.dart';
 import 'package:plain_registry_app/core/widgets/searchbar/searchbar_widget.dart';
 import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
-import 'package:plain_registry_app/workflow/home/presenter/pages/new_registry_page.dart';
-import 'package:plain_registry_app/workflow/home/presenter/providers/registry_groups_provider.dart';
 import 'package:plain_registry_app/root/app_router.dart';
+import 'package:plain_registry_app/workflow/chat/chat_worflow.dart';
+import 'package:plain_registry_app/workflow/home/home_worflow.dart';
+import 'package:plain_registry_app/workflow/home/presenter/widgets/registries_widgets.dart';
+import 'package:plain_registry_app/workflow/home/presenter/pages/groups/registry_groups_provider.dart';
 import 'package:provider/provider.dart';
 
-class RegistriesPage extends StatefulWidget {
-  const RegistriesPage({super.key});
+class RegistryGroupsPage extends StatefulWidget {
+  const RegistryGroupsPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => _RegistriesPageState();
+  State<StatefulWidget> createState() => _RegistryGroupsPageState();
 }
 
-class _RegistriesPageState extends State<RegistriesPage>
-    with SearchbarWidget, AppbarWidgets, CommonWidgets {
-  final ValueNotifier<int?> focusedGroupIndex = ValueNotifier(null);
-
+class _RegistryGroupsPageState extends State<RegistryGroupsPage>
+    with SearchbarWidget, AppbarWidgets, CommonWidgets, RegistriesWidgets {
+  
   @override
   void initState() {
     context.read<RegistryGroupsProvider>().load();
     super.initState();
   }
 
-  final fileIcons = <IconData>[
-    Icons.picture_as_pdf,
-    Icons.image,
-    Icons.video_file_rounded,
-  ];
-
   @override
   dispose() {
     super.dispose();
   }
 
-  Widget footer() => GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(AppRouter.createRoute(
-              ChangeNotifierProvider<RegistryGroupsProvider>.value(
-                  value: context.read<RegistryGroupsProvider>(),
-                  child: const NewRegistryPage())));
-        },
-        child: titleContainer('Adicionar novo arquivo'),
-      );
-
-  Widget openedGroupWidget(RegistryGroupsProvider provider, int? groupIndex) =>
-      const SizedBox();
-
-  Widget closedGroupWidget(RegistryGroupsProvider provider, int groupIndex) =>
+  Widget groupWidget(RegistryGroupsProvider provider, int groupIndex) =>
       GestureDetector(
         onTap: () {
-          focusedGroupIndex.value = groupIndex;
+          Navigator.push(context, AppRouter.createRoute(HomeWorflow.openedRegistryGroupPage(provider.groups[groupIndex]), transition: RouteTransition.rightToLeft));
         },
         child: Container(
             margin: const EdgeInsets.only(top: 15),
@@ -81,7 +63,7 @@ class _RegistriesPageState extends State<RegistriesPage>
             )),
       );
 
-  Widget _groupList(RegistryGroupsProvider provider) => Column(
+  Widget loadedGroups(RegistryGroupsProvider provider) => Column(
         children: [
           pageHeader('Grupos'),
           Expanded(
@@ -100,15 +82,15 @@ class _RegistriesPageState extends State<RegistriesPage>
                   color: AppColors.backgroundColor,
                   borderRadius: BorderRadius.circular(25)),
               padding: const EdgeInsets.all(15),
-              child: 
-              provider.groups.isEmpty ?
-                const Center(child: Text('Nenhum grupo criado'),) :
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: provider.groups.length,
-                itemBuilder: (context, groupIndex) =>
-                    closedGroupWidget(provider, groupIndex),
-              ),
+              child: provider.groups.isEmpty
+                  ? const Center(
+                      child: Text('Nenhum grupo criado'),
+                    )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: provider.groups.length,
+                      itemBuilder: (context, groupIndex) => groupWidget(provider, groupIndex),
+                    ),
             ),
           ),
         ],
@@ -123,9 +105,8 @@ class _RegistriesPageState extends State<RegistriesPage>
       ),
       persistentFooterAlignment: AlignmentDirectional.bottomCenter,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: footer(),
+      floatingActionButton: newRegistryFooter(context),
       body: Selector<RegistryGroupsProvider, RegistryGroupsProviderStatus>(
-        
         selector: (context, provider) => provider.status,
         builder: (context, status, child) => switch (status) {
           RegistryGroupsProviderStatus.loading => const Center(
@@ -135,35 +116,8 @@ class _RegistriesPageState extends State<RegistriesPage>
               child: Text(context.read<RegistryGroupsProvider>().errorMessage!),
             ),
           RegistryGroupsProviderStatus.loaded => Container(
-              decoration:
-                  const BoxDecoration(gradient: AppGradients.primaryColors),
-              child: ValueListenableBuilder(
-                  valueListenable: focusedGroupIndex,
-                  builder: (context, value, child) => AnimatedCrossFade(
-                      layoutBuilder:
-                          (topChild, topChildKey, bottomChild, bottomChildKey) {
-                        return Stack(
-                          fit: StackFit.expand,
-                          alignment: Alignment.center,
-                          children: <Widget>[
-                            Positioned(
-                              key: bottomChildKey,
-                              child: bottomChild,
-                            ),
-                            Positioned(
-                              key: topChildKey,
-                              child: topChild,
-                            ),
-                          ],
-                        );
-                      },
-                      alignment: Alignment.topCenter,
-                      firstChild: _groupList(context.read<RegistryGroupsProvider>()),
-                      secondChild: openedGroupWidget(context.read<RegistryGroupsProvider>(), focusedGroupIndex.value),
-                      crossFadeState: focusedGroupIndex.value != null
-                          ? CrossFadeState.showSecond
-                          : CrossFadeState.showFirst,
-                      duration: const Duration(milliseconds: 500))))
+              decoration: const BoxDecoration(gradient: AppGradients.primaryColors),
+              child: loadedGroups(context.read<RegistryGroupsProvider>()))
         },
       ),
     );

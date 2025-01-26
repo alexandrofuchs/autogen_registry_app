@@ -19,8 +19,8 @@ class AppLocalDb {
 
       localDatabase = await openDatabase(path,
         onOpen: (db) async {
-          debugPrint(RegistryDbModel.dropTableCommand);
-          await db.execute(RegistryDbModel.dropTableCommand);
+          // debugPrint(RegistryDbModel.dropTableCommand);
+          // await db.execute(RegistryDbModel.dropTableCommand);
           debugPrint(RegistryDbModel.createTableCommand);
           await db.execute(RegistryDbModel.createTableCommand);
         },

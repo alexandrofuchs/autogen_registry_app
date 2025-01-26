@@ -1,12 +1,18 @@
 part of 'registries_repository.dart';
 
-extension RegistriesAdapter on RegistryModel<String>{
-  Map<String, dynamic> toMap() => {
-    'group': group,
-    'date_time': dateTime,
-    'description': description,
-    'content_name':  contentName,
-    'content_type': contentType.value,
-    'content_data': jsonEncode(contentData),
-  };
+extension RegistriesAdapter on RegistryModel<dynamic>{
+  static RegistryModel fromMap(Map<String, dynamic> map) => 
+    RegistryModel(
+      id: map['id'],
+     contentName: map['content_name'],
+     topic: map['topic'],
+     description: map['description'],
+     group: map['content_group'],
+     dateTime: DateTime.parse(map['date_time']),
+     contentData: map['content_data'], 
+     contentType: RegistryType.fromString(map['content_type']));
+
+
+  static List<RegistryModel> fromMapList(List<dynamic> list) =>
+    list.map((e) => RegistriesAdapter.fromMap(e)).toList();
 }

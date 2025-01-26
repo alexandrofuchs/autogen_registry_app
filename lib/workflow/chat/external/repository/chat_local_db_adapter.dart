@@ -18,7 +18,7 @@ extension ChatLocalDbAdapter on Chat {
             jsonDecode(map['content_data'])),
         contentName: map['content_name'],
         contentType: RegistryType.fromString(map['content_type']),
-        dateTime: map['date_time'],
+        dateTime: DateTime.parse(map['date_time']),
         topic: map['topic'],
         description: map['description'],
         group: map['content_group'],
@@ -38,7 +38,7 @@ extension TextMessageLocalDbAdapter on SavedTextMessageModel {
           id: map['id'],
           replyToMessageId: map['reply_to_message_id'],
           sender: MessageSender.fromValue(map['role']),
-          text: map['parts'][0]['text']);
+          text: map['text']);
 
   static List<SavedTextMessageModel> fromMapList(List<dynamic> list) =>
       list.map((e) => TextMessageLocalDbAdapter.fromMap(e)).toList();

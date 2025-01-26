@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:plain_registry_app/core/response/i_response_result.dart';
 import 'package:plain_registry_app/workflow/home/domain/i_repositories/i_registry_repository.dart';
 import 'package:plain_registry_app/workflow/home/domain/models/registry_model.dart';
@@ -13,33 +11,23 @@ class RegistriesRepository implements IRegistriesRepository {
   RegistriesRepository(this._database);
 
   @override
-  Future<IResponseResult<int>> save(RegistryModel model) async {
+  Future<IResponseResult<List<RegistryModel>>> loadByGroup(String group) async {
     try {
-      final response = await _database.insert('Registries', {});
-      return Success(response);
-    } catch (e) {
-      return Fail('não foi possível salvar o registro', e);
-    }
-  }
+      final response = await _database.query(
+        'Registries',
+        columns: [
+          'id',
+          'topic',
+          'description',
+          'content_group',
+          'content_type',
+          'date_time',
+        ],
+        where: 'content_group = ?',
+        whereArgs: [group],
+      );
 
-  @override
-  Future<IResponseResult<List<RegistryModel<String>>>> loadByGroup(
-      String group) async {
-    try {
-      final response = [
-        RegistryModel<String>(
-            id: 1,
-            topic: 'Um estudo',
-            contentName: 'doc.pdf',
-            description: 'Um arquivo pdf',
-            contentData: '',
-            group: 'estudos',
-            dateTime: DateTime.now(),
-            contentType: RegistryType.document)
-      ];
-
-      await Future.delayed(const Duration(seconds: 2));
-      return Success(response);
+      return Success(RegistriesAdapter.fromMapList(response));
     } catch (e) {
       return Fail('erro ao retornar registros', e);
     }

@@ -6,18 +6,17 @@ import 'package:plain_registry_app/workflow/chat/domain/i_services/i_text_messag
 class TextMessageController {
   final ITextMessageService _service;
 
-  final _streamController = StreamController<List<TextMessage>>(
-    onPause: () => print('Paused'),
-    onResume: () => print('Resumed'),
-    onCancel: () => print('Cancelled'),
-    onListen: () => print('Listens'),
-  );
+  final _streamController = StreamController<List<TextMessage>>();
 
   Stream<List<TextMessage>> get onNewMessage => _streamController.stream;
 
   TextMessageController(this._service);
 
-  generateAnswer(List<TextMessage> historical) async {
+  set historical(List<TextMessage> messages){
+    _streamController.add(messages);
+  }
+
+  Future<void> generateAnswer(List<TextMessage> historical) async {
     final response = await _service.generateAnswer(historical);
 
     response.resolve(

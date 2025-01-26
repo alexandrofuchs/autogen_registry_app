@@ -18,8 +18,7 @@ class ChatRepository implements IChatRepository {
   @override
   Future<IResponseResult<Chat>> loadPreviousChat(int id) async {
     try {
-      final response = await _database.query('Registries',
-          columns: ['content_data'], where: 'id = ?', whereArgs: [id]);
+      final response = await _database.query('Registries', where: 'id = ?', whereArgs: [id]);
       return Success(ChatLocalDbAdapter.fromMap(response.first));
     } catch (e) {
       return Fail('Chat não encontrado', e);

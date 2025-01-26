@@ -5,16 +5,7 @@ import 'package:plain_registry_app/core/theme/app_text_styles.dart';
 
 mixin CommonWidgets {
 
-  Widget pageHeader(String label) =>
-  Container(
-              alignment: Alignment.bottomCenter,
-              height: 50,
-              child: Text(
-                label,
-                style: AppTextStyles.labelStyleLarge,
-              ));
-
-  Widget titleContainer(String text, {Function()? backAction}) => Container(
+   Widget titleContainer(String text, {Function()? backAction}) => Container(
         decoration: const BoxDecoration(
           gradient: AppGradients.primaryColors,
           border: Border(top: BorderSide(color: AppColors.primaryColorLight, width: 1)),
@@ -44,6 +35,15 @@ mixin CommonWidgets {
           ],
         ),
       );
+
+  Widget pageHeader(String label) =>
+  Container(
+              alignment: Alignment.bottomCenter,
+              height: 50,
+              child: Text(
+                label,
+                style: AppTextStyles.labelStyleLarge,
+              ));
 
   Widget divider() => const Padding(
         padding: EdgeInsets.only(left: 25, right: 25),

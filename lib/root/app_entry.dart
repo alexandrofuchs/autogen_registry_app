@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:plain_registry_app/core/theme/app_theme.dart';
-import 'package:plain_registry_app/workflow/home/presenter/providers/registry_groups_provider.dart';
-import 'package:plain_registry_app/workflow/home/presenter/registries_page.dart';
-import 'package:provider/provider.dart';
+import 'package:plain_registry_app/workflow/home/home_worflow.dart';
 
 class AppEntry extends StatelessWidget {
   const AppEntry({super.key});
@@ -13,9 +10,6 @@ class AppEntry extends StatelessWidget {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: AppTheme.defaultTheme(context),
-        home: ChangeNotifierProvider<RegistryGroupsProvider>(
-          create: (context) => RegistryGroupsProvider(GetIt.I.get()),
-          child: const RegistriesPage(),
-        ));
+        home: HomeWorflow.groupsPage());
   }
 }

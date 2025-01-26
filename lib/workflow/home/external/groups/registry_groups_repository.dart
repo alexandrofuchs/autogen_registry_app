@@ -12,7 +12,7 @@ class RegistryGroupsRepository  implements IRegistryGroupsRepository{
   @override
   Future<IResponseResult<List<String>>> load() async {
     try{
-      final response = await _database.query('Registries', columns: ['content_group']);
+      final response = await _database.query('Registries', columns: ['content_group'], distinct: true);
       return Success(RegistryGroupsAdapter.fromMapList(response));
     }catch(e){
       return Fail('não foi possivel carregar os grupos', e);

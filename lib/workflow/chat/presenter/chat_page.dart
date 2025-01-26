@@ -33,11 +33,26 @@ class _ChatPageState extends State<ChatPage> with CommonWidgets {
 
   @override
   initState() {
+    
+    context.read<ChatProvider>().addListener(_loadHistorical);
+    if(widget.registry.hasId){
+      context.read<ChatProvider>().loadChat(widget.registry.id!);
+    } 
+
+
     super.initState();
+  }
+
+  void _loadHistorical() {
+    if(context.read<ChatProvider>().status == ChatProviderStatus.loaded){
+      _textMessageController.historical = context.read<ChatProvider>().chat.messages;
+      context.read<ChatProvider>().removeListener(_loadHistorical);
+    }
   }
 
   @override
   dispose() {
+    context.read<ChatProvider>().removeListener(_loadHistorical);
     _textMessageController.dispose();
     _instructionController.dispose();
     _contentController.dispose();
@@ -217,10 +232,10 @@ class _ChatPageState extends State<ChatPage> with CommonWidgets {
         child: Selector<ChatProvider, ChatProviderStatus>(
             selector: (context, provider) => provider.status,
             builder: (context, status, child) => switch (status) {
-                  ChatProviderStatus.initial => initChat(),
+                  ChatProviderStatus.initialized => initChat(),
                   ChatProviderStatus.loading => loadingChat(),
                   ChatProviderStatus.loaded => loadedChat(),
-                  ChatProviderStatus.notFound => const SizedBox()
+                  ChatProviderStatus.failed => const Center(child: Text('Não foi possível iniciar o chat.', style: AppTextStyles.labelStyleMedium,),)
                 }),
       );
 
