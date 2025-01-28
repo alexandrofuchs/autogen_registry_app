@@ -19,12 +19,6 @@ class OpenedRegistriesGroupPage extends StatelessWidget
   final String group;
   OpenedRegistriesGroupPage({super.key, required this.group});
 
-  final fileIcons = <IconData>[
-    Icons.picture_as_pdf,
-    Icons.image,
-    Icons.video_file_rounded,
-  ];
-
   Widget openedGroupWidget() => Container(
       decoration: const BoxDecoration(gradient: AppGradients.primaryColors),
       child: Selector<RegistriesProvider, RegistriesProviderStatus>(
@@ -38,49 +32,21 @@ class OpenedRegistriesGroupPage extends StatelessWidget
                   ),
                 RegistriesProviderStatus.loaded => Column(
                     children: [
-                      Container(
-                          alignment: Alignment.bottomCenter,
-                          height: 50,
-                          margin: const EdgeInsets.only(top: 5, bottom: 15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              BackButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                color: AppColors.primaryColor,
-                                style: const ButtonStyle(
-                                  iconSize: WidgetStatePropertyAll(24),
-                                ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  context
-                                      .read<RegistriesProvider>()
-                                      .registries
-                                      .first
-                                      .group,
-                                  style: AppTextStyles.labelStyleLarge,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ],
-                          )),
                       searchBar((value) {
-                        // context.read<RegistryGroupsProvider>().textFilter = value;
+                        context.read<RegistriesProvider>().filterText = value;
                       }),
-                      filterBar(),
                       Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(top: 0),
-                          alignment: Alignment.topCenter,
-                          decoration: const BoxDecoration(
-                              color: AppColors.backgroundColor,
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(25),
-                                  topRight: Radius.circular(25))),
-                          child: ListView.builder(
+                          child: Container(
+                        margin: const EdgeInsets.only(top: 25),
+                        alignment: Alignment.topCenter,
+                        decoration: const BoxDecoration(
+                            color: AppColors.backgroundColor,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25),
+                                topRight: Radius.circular(25))),
+                        child: Selector<RegistriesProvider, String>(
+                          selector: (context, provider) => provider.filterText,
+                          builder: (context, value, child) => ListView.builder(
                             shrinkWrap: true,
                             itemCount: context
                                 .read<RegistriesProvider>()
@@ -92,19 +58,15 @@ class OpenedRegistriesGroupPage extends StatelessWidget
                                   .read<RegistriesProvider>()
                                   .registries[index]
                                   .contentType) {
-                                RegistryType.document => null,
-                                RegistryType.video => null,
-                                RegistryType.image => null,
-                                RegistryType.audio => null,
                                 RegistryType.textGeneration => Navigator.push(
                                     context,
-                                    AppRouter.createRoute(ChatWorkflow.page(
+                                    AppRouter.createRoute(ChatWorkflow.chatPage(
                                         context
                                             .read<RegistriesProvider>()
                                             .registries[index]))),
                               },
                               child: item(
-                                      fileIcons[index],
+                                      Icons.text_fields,
                                       context
                                           .read<RegistriesProvider>()
                                           .registries[index]
@@ -119,7 +81,7 @@ class OpenedRegistriesGroupPage extends StatelessWidget
                             ),
                           ),
                         ),
-                      ),
+                      )),
                     ],
                   )
               }));
@@ -128,12 +90,17 @@ class OpenedRegistriesGroupPage extends StatelessWidget
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 0,
+        toolbarHeight: 50,
+        centerTitle: true,
         backgroundColor: AppColors.primaryColor,
+        title: Text(
+          group,
+          style: AppTextStyles.labelStyleLarge,
+          textAlign: TextAlign.center,
+        ),
       ),
       persistentFooterAlignment: AlignmentDirectional.bottomCenter,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: newRegistryFooter(context),
       body: openedGroupWidget(),
     );
   }

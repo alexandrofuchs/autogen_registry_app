@@ -9,25 +9,26 @@ extension DateTimeFormatters on DateTime {
     : '${hour > 9 ? hour : '0$hour'}$separator${minute > 9 ? minute : '0$minute'}';
   
   String toDaysNumberPast() {
-    final days = difference(DateTime.now()).inDays;
-    final hours = difference(DateTime.now()).inHours;
+    final dateTime = this;
+
+    final days = DateTime.now().difference(dateTime).inDays;
+    final hours = DateTime.now().difference(dateTime).inHours;
+    
 
     final now = DateTime.now();
     final y = now.year;
     final m = now.month;
     final d =now.day;
 
-    final todayDuration = now.difference(DateTime(y, m, d, 23, 59));
+    final todayDuration = DateTime(y, m, d, 23, 59).difference(now);
 
-    if(days > 1){
-      return '$days dias atrás';
-    }
-    if(days == 1) return 'ontem';
+    
+    if(days == 1) return 'ontem às ${dateTime.toHourString()}';
+    if(days > 1) return '$days dias atrás às ${dateTime.toHourString()}';
 
-    if(todayDuration.inHours < hours){
-      return 'ontem';
-    }
+    if(hours > todayDuration.inHours) return 'ontem às ${dateTime.toHourString()}';
 
-    return 'hoje';
+    return  'hoje às ${dateTime.toHourString()}';
+   
   }
 }

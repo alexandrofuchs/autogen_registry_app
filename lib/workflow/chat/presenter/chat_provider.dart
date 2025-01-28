@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:plain_registry_app/workflow/chat/domain/i_repositories/i_chat_repository.dart';
 import 'package:plain_registry_app/workflow/chat/domain/models/chat.dart';
+import 'package:plain_registry_app/workflow/chat/domain/models/text_message.dart';
 
 enum ChatProviderStatus {
   loading,
   failed,
-  initialized,
+  init,
   loaded,
 }
 
 class ChatProvider extends ChangeNotifier {
   final IChatRepository _repository;
 
-  ChatProviderStatus _status = ChatProviderStatus.loading;
+  ChatProviderStatus _status = ChatProviderStatus.init;
 
   Chat? _chat;
 
@@ -33,12 +34,11 @@ class ChatProvider extends ChangeNotifier {
     response.resolve(onFail: (err) {
       _errorMessage = err;
       _status = ChatProviderStatus.failed;
-      notifyListeners();
     }, onSuccess: (data) {
       _chat = data;
       _status = ChatProviderStatus.loaded;
-      notifyListeners();
     });
+    notifyListeners();
     
   }
 
@@ -47,8 +47,19 @@ class ChatProvider extends ChangeNotifier {
     response.resolve(
         onFail: (err) {},
         onSuccess: (data) {
-          _chat = chat;
-          _status = ChatProviderStatus.initialized;
+          _chat = data;
+          _status = ChatProviderStatus.loaded;
+        });
+    notifyListeners();
+  }
+
+  Future<void> saveMessages(List<TextMessage> messages) async {
+    final response = await _repository.saveMessages(chat.id!, messages);
+    response.resolve(
+        onFail: (err) {},
+        onSuccess: (data) {
+          print('MESSAGE SAVED');
+          print(data);
         });
     notifyListeners();
   }

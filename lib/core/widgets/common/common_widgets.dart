@@ -4,26 +4,25 @@ import 'package:plain_registry_app/core/theme/app_gradients.dart';
 import 'package:plain_registry_app/core/theme/app_text_styles.dart';
 
 mixin CommonWidgets {
-
-   Widget titleContainer(String text, {Function()? backAction}) => Container(
+  Widget titleContainer(String text, {Function()? backAction}) => Container(
         decoration: const BoxDecoration(
-          gradient: AppGradients.primaryColors,
-          border: Border(top: BorderSide(color: AppColors.primaryColorLight, width: 1)),
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(25), topRight: Radius.circular(25)),
-          color: AppColors.primaryColor,
+          border: Border(
+            top:BorderSide(color: AppColors.secundaryColor, width: 1),
+            bottom: BorderSide(color: AppColors.secundaryColor, width: 1)),
+          color: AppColors.primaryColorDark,
         ),
         height: 50,
-        alignment: Alignment.center,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-             backAction != null?
-             BackButton(color: AppColors.secundaryColor,
-            onPressed: () {
-              backAction();
-            },
-            ): const SizedBox(),
+            backAction != null
+                ? BackButton(
+                    color: AppColors.secundaryColor,
+                    onPressed: () {
+                      backAction();
+                    },
+                  )
+                : const SizedBox(),
             Expanded(
               child: Text(
                 text,
@@ -31,19 +30,18 @@ mixin CommonWidgets {
                 style: AppTextStyles.labelStyleLarge,
               ),
             ),
-            const SizedBox(width: 24, height: 24,),
+            
           ],
         ),
       );
 
-  Widget pageHeader(String label) =>
-  Container(
-              alignment: Alignment.bottomCenter,
-              height: 50,
-              child: Text(
-                label,
-                style: AppTextStyles.labelStyleLarge,
-              ));
+  Widget pageHeader(String label) => Container(
+      alignment: Alignment.bottomCenter,
+      height: 50,
+      child: Text(
+        label,
+        style: AppTextStyles.labelStyleLarge,
+      ));
 
   Widget divider() => const Padding(
         padding: EdgeInsets.only(left: 25, right: 25),
@@ -154,9 +152,10 @@ mixin CommonWidgets {
       );
 
   Widget fieldContainer({Widget? child}) => Container(
-        decoration: const BoxDecoration(
-            color: AppColors.secundaryColor,
-            borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+            color: AppColors.primaryColorDark,
+            border: Border.all(color: AppColors.secundaryColor),
+            borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(45),
                 topRight: Radius.circular(25),
                 bottomLeft: Radius.circular(25),
@@ -165,9 +164,9 @@ mixin CommonWidgets {
         child: child,
       );
 
-
-   Widget actionButton(IconData icon, String label, Function() action, {bool enable = true}) => 
-    Align(
+  Widget actionButton(IconData icon, String label, Function() action,
+          {bool enable = true}) =>
+      Align(
         alignment: Alignment.center,
         child: GestureDetector(
           onTap: enable ? action : null,
@@ -184,8 +183,8 @@ mixin CommonWidgets {
               ],
               gradient: AppGradients.actionColors,
               borderRadius: BorderRadius.only(
-                topRight: Radius.circular(10),
-                bottomRight: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
                   topLeft: Radius.circular(10),
                   bottomLeft: Radius.circular(10)),
             ),
@@ -194,7 +193,10 @@ mixin CommonWidgets {
             height: 50,
             child: Row(
               children: [
-                Icon(icon, color: AppColors.secundaryColor,),
+                Icon(
+                  icon,
+                  color: AppColors.secundaryColor,
+                ),
                 Expanded(
                   child: Text(
                     label,
@@ -211,7 +213,9 @@ mixin CommonWidgets {
         ),
       );
 
-  Widget positiveActionButton(String label, Function() action, {bool enable = true}) => Align(
+  Widget positiveActionButton(String label, Function() action,
+          {bool enable = true}) =>
+      Align(
         alignment: Alignment.center,
         child: GestureDetector(
           onTap: enable ? action : null,
@@ -228,8 +232,8 @@ mixin CommonWidgets {
               ],
               gradient: AppGradients.positiveActionColors,
               borderRadius: BorderRadius.only(
-                topRight: Radius.circular(0),
-                bottomRight: Radius.circular(0),
+                  topRight: Radius.circular(0),
+                  bottomRight: Radius.circular(0),
                   topLeft: Radius.circular(10),
                   bottomLeft: Radius.circular(10)),
             ),
@@ -248,7 +252,9 @@ mixin CommonWidgets {
         ),
       );
 
-   Widget negativeActionButton(String label, Function() action, {bool enable = true}) => Align(
+  Widget negativeActionButton(String label, Function() action,
+          {bool enable = true}) =>
+      Align(
         alignment: Alignment.center,
         child: GestureDetector(
           onTap: enable ? action : null,
@@ -265,8 +271,8 @@ mixin CommonWidgets {
               ],
               gradient: AppGradients.negativeActionColors,
               borderRadius: BorderRadius.only(
-                topRight: Radius.circular(10),
-                bottomRight: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
                   topLeft: Radius.circular(0),
                   bottomLeft: Radius.circular(0)),
             ),
@@ -275,14 +281,13 @@ mixin CommonWidgets {
             height: 50,
             child: Text(
               label,
-              style: AppTextStyles.labelStyleLarge.copyWith(
-                  color: Colors.white),
+              style:
+                  AppTextStyles.labelStyleLarge.copyWith(color: Colors.white),
               textAlign: TextAlign.center,
             ),
           ),
         ),
       );
-      
 
   Widget titleDot(String text) => SizedBox(
         height: 50,

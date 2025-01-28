@@ -11,7 +11,7 @@ mixin RegistriesWidgets on CommonWidgets {
           Navigator.of(context).push(AppRouter.createRoute(
               ChangeNotifierProvider<RegistryGroupsProvider>.value(
                   value: context.read<RegistryGroupsProvider>(),
-                  child: const NewRegistryPage())));
+                  child: const NewRegistryPage()), transition: RouteTransition.downToUp),);
         },
         child: titleContainer('Adicionar novo arquivo'),
       );

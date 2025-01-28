@@ -3,6 +3,7 @@ part of 'chat_repository.dart';
 extension ChatLocalDbAdapter on Chat {
   Map<String, dynamic> toMap() =>
       {
+        'id': id ?? DateTime.now().millisecondsSinceEpoch,
         'content_data': jsonEncode(messages.map((e) => e.toMap()).toList()),
         'content_name': contentName,
         'content_type': contentType.value,
@@ -25,21 +26,19 @@ extension ChatLocalDbAdapter on Chat {
       );
 }
 
-extension TextMessageLocalDbAdapter on SavedTextMessageModel {
+extension TextMessageLocalDbAdapter on TextMessage {
   Map<String, dynamic> toMap() => {
         'id': id,
-        'reply_to_message_id': replyToMessageId,
         'role': sender.value,
         'text': text,
       };
 
-  static SavedTextMessageModel fromMap(Map<String, dynamic> map) =>
-      SavedTextMessageModel(
+  static TextMessage fromMap(Map<String, dynamic> map) =>
+      TextMessage(
           id: map['id'],
-          replyToMessageId: map['reply_to_message_id'],
           sender: MessageSender.fromValue(map['role']),
           text: map['text']);
 
-  static List<SavedTextMessageModel> fromMapList(List<dynamic> list) =>
+  static List<TextMessage> fromMapList(List<dynamic> list) =>
       list.map((e) => TextMessageLocalDbAdapter.fromMap(e)).toList();
 }

@@ -24,15 +24,12 @@ class NewRegistryPage extends StatefulWidget {
 
 class _NewRegistryPageState extends State<NewRegistryPage>
     with CommonWidgets, AppbarWidgets {
-  late final List<String> _fileTypeOptions;
-
   late final List<String> _groups;
 
   late final ValueNotifier<int> _selectedGroupIndex;
   late final ValueNotifier<int> _selectedFileTypeIndex;
 
   late final TextInputValidator _descriptionTextInput;
-  late final TextInputValidator _filenameTextInput;
   late final TextInputValidator _groupTextInput;
 
   @override
@@ -43,15 +40,10 @@ class _NewRegistryPageState extends State<NewRegistryPage>
     _groups = [
       'Selecione um grupo...',
       'Novo grupo',
-      ...context
-          .read<RegistryGroupsProvider>()
-          .groups
+      ...context.read<RegistryGroupsProvider>().groups
     ];
 
-    _fileTypeOptions = RegistryType.values.map((e) => e.value).toList();
-
     _groupTextInput = TextInputValidator();
-    _filenameTextInput = TextInputValidator();
     _descriptionTextInput = TextInputValidator();
 
     super.initState();
@@ -59,17 +51,14 @@ class _NewRegistryPageState extends State<NewRegistryPage>
 
   @override
   void dispose() {
+    super.dispose();
+
     _selectedFileTypeIndex.dispose();
     _selectedGroupIndex.dispose();
-    _descriptionTextInput.dispose();
-    _groupTextInput.dispose();
-    _filenameTextInput.dispose();
-    super.dispose();
   }
 
   void validateAndCreateFileAction() {
-
-    if(_selectedGroupIndex.value == 0){
+    if (_selectedGroupIndex.value == 0) {
       AppSnackbars.showErrorSnackbar(context, 'Selecione ou crie um grupo');
       return;
     }
@@ -87,50 +76,47 @@ class _NewRegistryPageState extends State<NewRegistryPage>
     }
 
     late RegistryType itemType =
-        RegistryType.fromString(_fileTypeOptions[_selectedFileTypeIndex.value]);
+        RegistryType.values[_selectedFileTypeIndex.value];
 
     final item = RegistryModel(
-        id: null,
-        topic: 'a',
-        contentData: null,
-        contentName: null,
-        contentType: itemType,
-        description: _descriptionTextInput.controller.text,
-        group: _groupTextInput.controller.text,
-        dateTime: DateTime.now(),
-        );
+      id: null,
+      topic: '',
+      contentData: null,
+      contentName: null,
+      contentType: itemType,
+      description: _descriptionTextInput.controller.text,
+      group: _groupTextInput.controller.text,
+      dateTime: DateTime.now(),
+    );
 
-    switch (RegistryType.fromString(
-        _fileTypeOptions[_selectedFileTypeIndex.value])) {
-      case RegistryType.document:
-        break;
-      case RegistryType.video:
-        break;
-      case RegistryType.image:
-        break;
-      case RegistryType.audio:
-        break;
+    switch (itemType) {
       case RegistryType.textGeneration:
-        // Navigator.push(context, AppRouter.createRoute(
-        //   ChangeNotifierProvider(create: (context) => ChatProvider(GetIt.I.get()),
-        //   child: ChatPage(registry: item,))));
+        Navigator.pushReplacement(
+            context,
+            AppRouter.createRoute(ChangeNotifierProvider(
+                create: (context) => ChatProvider(GetIt.I.get()),
+                child: ChatPage(
+                  registry: item,
+                ))));
         break;
     }
   }
 
-  Widget selectFields<DataType extends Object>(
-          List<DataType> options, ValueNotifier<int> selectedValue, Function(int value) onSelected) =>
+  Widget selectField<DataType extends Object>(List<DataType> options,
+          ValueNotifier<int> selectedValue, Function(int value) onSelected) =>
       fieldContainer(
           child: ValueListenableBuilder(
               valueListenable: selectedValue,
               builder: (context, value, child) => DropdownButton<int>(
                     padding: const EdgeInsets.only(
-                        left: 15, right: 15, top: 5, bottom: 05),
-                    elevation: 1,
+                        left: 15, right: 15, top: 5, bottom: 5),
+                    elevation: 0,
                     alignment: Alignment.centerRight,
                     isExpanded: true,
                     value: selectedValue.value,
-                    style: AppTextStyles.bodyStyleSmall,
+                    style: AppTextStyles.labelStyleSmall,
+                    dropdownColor: AppColors.primaryColorDark,
+                    iconEnabledColor: AppColors.secundaryColor,
                     items: options
                         .map<DropdownMenuItem<int>>((e) => DropdownMenuItem(
                               value: options.indexOf(e),
@@ -171,81 +157,73 @@ class _NewRegistryPageState extends State<NewRegistryPage>
       valueListenable: _selectedGroupIndex,
       builder: (context, value, child) => value == 1
           ? TextInputBuilder(
-            label: 'Nome do grupo...', 
-            inputValidator:  _groupTextInput,
-            errorText: 'Informe o nome do grupo',
+              label: 'Nome do grupo...',
+              inputValidator: _groupTextInput,
+              errorText: 'Informe o nome do grupo',
             )
           : const SizedBox());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(toolbarHeight: 10),
+      appBar: AppBar(
+        toolbarHeight: 50,
+        centerTitle: true,
+        title: const Text('Novo registro'),
+        bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1),
+            child: Container(
+              decoration: const BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(color: AppColors.secundaryColor))),
+              height: 1,
+            )),
+      ),
       resizeToAvoidBottomInset: true,
       persistentFooterAlignment: AlignmentDirectional.bottomCenter,
-      backgroundColor: AppColors.primaryColor,
       body: Container(
-        decoration: BoxDecoration(
-            color: AppColors.primaryColor,
-            border: const Border(
-              top: BorderSide(color: AppColors.primaryColorLight),
-            ),
-            borderRadius: BorderRadius.circular(25)),
-        child: Container(
-          decoration: const BoxDecoration(
-              gradient: AppGradients.primaryColors,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(25), topRight: Radius.circular(25))),
-          child: Column(
-            children: [
-              GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: addNewFileButtomHeader()),
-              Expanded(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    selectFields(RegistryType.values, _selectedFileTypeIndex,(value){
-                      _selectedFileTypeIndex.value = value;
-                    }),
-                    selectFields(_groups, _selectedGroupIndex, (value){
-                      _selectedGroupIndex.value = value;
-                      if(value < 2){
-                        _groupTextInput.text = '';
-                        return;
-                      }
-                      _groupTextInput.text = _groups[value];
-                    }),
-                    groupTextField(),
-                    TextInputBuilder(
-                      label: 'Uma breve descrição...', 
-                      errorText: 'Descreva o registro',
-                      inputValidator: _descriptionTextInput, 
-                      maxLength: 50,
-                    ),
-                   
-                    const SizedBox(height: 15),
-                  ])),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 25),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          negativeActionButton(
-                              'RETORNAR', () => Navigator.pop(context)),
-                          positiveActionButton('AVANÇAR', validateAndCreateFileAction),
-                        ],
-                      ),
-                    )
-                  ],
+        decoration: const BoxDecoration(
+          gradient: AppGradients.primaryColors,
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(shrinkWrap: true, children: [
+                selectField(RegistryType.values, _selectedFileTypeIndex,
+                    (value) {
+                  _selectedFileTypeIndex.value = value;
+                }),
+                selectField(_groups, _selectedGroupIndex, (value) {
+                  _selectedGroupIndex.value = value;
+                  if (value < 2) {
+                    _groupTextInput.text = '';
+                    return;
+                  }
+                  _groupTextInput.text = _groups[value];
+                }),
+                groupTextField(),
+                TextInputBuilder(
+                  label: 'Uma breve descrição...',
+                  errorText: 'Descreva o registro',
+                  inputValidator: _descriptionTextInput,
+                  maxLength: 50,
                 ),
+                const SizedBox(height: 15),
+              ]),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 25),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  negativeActionButton('VOLTAR', () => Navigator.pop(context)),
+                  positiveActionButton('AVANÇAR', validateAndCreateFileAction),
+                ],
               ),
-            
-          
-        
+            )
+          ],
+        ),
       ),
     );
   }

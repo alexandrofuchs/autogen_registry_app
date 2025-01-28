@@ -1,20 +1,25 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get_it/get_it.dart';
 import 'package:plain_registry_app/core/common/text_input/text_input_validator.dart';
 import 'package:plain_registry_app/core/common/text_input/text_input_builder.dart';
+import 'package:plain_registry_app/core/helpers/formatters/datetime_formatters.dart';
 import 'package:plain_registry_app/core/theme/app_colors.dart';
 import 'package:plain_registry_app/core/theme/app_gradients.dart';
 import 'package:plain_registry_app/core/theme/app_text_styles.dart';
 import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
 import 'package:plain_registry_app/workflow/chat/domain/models/chat.dart';
 import 'package:plain_registry_app/workflow/chat/domain/models/text_message.dart';
-import 'package:plain_registry_app/workflow/chat/domain/models/new_text_message_model.dart';
 import 'package:plain_registry_app/workflow/chat/presenter/chat_provider.dart';
 import 'package:plain_registry_app/workflow/chat/presenter/text_message_provider.dart';
 import 'package:plain_registry_app/workflow/home/domain/models/registry_model.dart';
 import 'package:provider/provider.dart';
+
+part 'widgets/init_chat_widgets.dart';
+part 'widgets/loaded_chat_widget.dart';
 
 class ChatPage extends StatefulWidget {
   final RegistryModel registry;
@@ -28,278 +33,82 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> with CommonWidgets {
   final _textMessageController = TextMessageController(GetIt.I.get());
 
-  final _instructionController = TextInputValidator();
-  final _contentController = TextInputValidator();
+  late final StreamSubscription<List<TextMessage>> _textMessageSubscription;
 
   @override
   initState() {
-    
-    context.read<ChatProvider>().addListener(_loadHistorical);
-    if(widget.registry.hasId){
-      context.read<ChatProvider>().loadChat(widget.registry.id!);
-    } 
-
-
+    _initChat();
     super.initState();
   }
 
-  void _loadHistorical() {
-    if(context.read<ChatProvider>().status == ChatProviderStatus.loaded){
-      _textMessageController.historical = context.read<ChatProvider>().chat.messages;
-      context.read<ChatProvider>().removeListener(_loadHistorical);
+  void _initChat() {
+    listenToGeneratedMessage();
+    
+    if (widget.registry.hasId) {
+      context.read<ChatProvider>().loadChat(widget.registry.id!);
     }
+
+    
   }
 
   @override
   dispose() {
-    context.read<ChatProvider>().removeListener(_loadHistorical);
     _textMessageController.dispose();
-    _instructionController.dispose();
-    _contentController.dispose();
+    _textMessageSubscription.cancel();
     super.dispose();
   }
 
-  Widget loadingChat() => const Center(child: CircularProgressIndicator());
+  void listenToGeneratedMessage() {
+    try {
+      _textMessageSubscription =
+          _textMessageController.onNewMessage.listen((data) {
+        if (mounted) {
+          print('SALVEEEE');
 
-  Widget initChat() => ListView(
-        children: [
-          TextInputBuilder(
-            errorText: '',
-            label: 'Digite uma instrução especifica',
-            
-            inputValidator: _instructionController,
-              maxLength: 30),
-          TextInputBuilder(
-            label: 'Digite o conteúdo ou contexto da instrução', 
-            inputValidator: _contentController,
-            errorText: '',
-              maxLength: 200, maxLines: 3),
-          Container(
-            margin: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: AppColors.primaryColorDark,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(25),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Seu texto:\n',
-                        style: AppTextStyles.labelStyleMedium
-                            .copyWith(fontWeight: FontWeight.bold)),
-                    ValueListenableBuilder(
-                        valueListenable: _instructionController.controller,
-                        builder: (context, value, child) => 
-                            value.text.isEmpty ? const SizedBox() :
-                            Text(
-                            '${value.text}: ',
-                            style: AppTextStyles.labelStyleMedium
-                                .copyWith(fontWeight: FontWeight.w500))),
-                    ValueListenableBuilder(
-                        valueListenable: _contentController.controller,
-                        builder: (context, value, child) => 
-                          value.text.isEmpty ? const SizedBox() : Text(
-                            
-                            '${value.text}.',
-                            style: AppTextStyles.labelStyleMedium.copyWith(
-                                fontWeight: FontWeight.w500,
-                                fontStyle: FontStyle.italic))),
-                  ]),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              negativeActionButton('Cancelar', () {}),
-              positiveActionButton('Iniciar conversa', () async {
-                final messages = [
-                  NewTextMessageModel(
-                      sender: MessageSender.user, text: "${_instructionController.text}: ${_contentController.text}" )
-                ];
+          switch(context.read<ChatProvider>().status){
+            case ChatProviderStatus.init:
+              context.read<ChatProvider>().saveChat(Chat(
+                  id: widget.registry.id,
+                  contentName: widget.registry.contentName,
+                  contentType: widget.registry.contentType,
+                  topic: widget.registry.topic,
+                  dateTime: widget.registry.dateTime,
+                  description: widget.registry.description,
+                  group: widget.registry.group,
+                  contentData: data));
+              break;
+            case ChatProviderStatus.loaded:
+              context.read<ChatProvider>().saveMessages(data);
+              break;
+            default: break;
+          }
 
-                await context.read<ChatProvider>().saveChat(Chat(
-                    id: widget.registry.id,
-                    contentName: widget.registry.contentName,
-                    contentType: widget.registry.contentType,
-                    topic: widget.registry.topic,
-                    dateTime: widget.registry.dateTime,
-                    description: widget.registry.description,
-                    group: widget.registry.group,
-                    contentData: messages));
+          
+        }
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 
-                _textMessageController.generateAnswer(messages);
-              }),
-            ],
-          )
-        ],
-      );
+  Widget loading() => const Center(child: CircularProgressIndicator());
 
-  Widget loadedChat() => StreamBuilder<List<TextMessage>>(
-      stream: _textMessageController.onNewMessage,
-      builder: (context, snapshot) => snapshot.data != null
-          ? ListView.builder(
-              shrinkWrap: true,
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) =>
-                  switch (snapshot.data![index].sender) {
-                    MessageSender.ia => iaText(snapshot.data![index]),
-                    MessageSender.user => userText(snapshot.data![index]),
-                  })
-          : const SizedBox());
-
-  Widget _markdownWidget(String text) => Markdown(
-      shrinkWrap: true,
-      selectable: true,
-      physics: const NeverScrollableScrollPhysics(),
-      styleSheet: MarkdownStyleSheet(
-        textAlign: WrapAlignment.start,
-        p: AppTextStyles.labelStyleSmall,
-        h1Align: WrapAlignment.center,
-        codeblockPadding: const EdgeInsets.all(15),
-        code: AppTextStyles.labelStyleSmall,
-        codeblockDecoration: ShapeDecoration(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            ),
-            color: Colors.black),
-        strong: AppTextStyles.labelStyleMedium,
-        h1: AppTextStyles.labelStyleLarge,
-        h2: AppTextStyles.labelStyleMedium,
-      ),
-      data: text);
-
-  Widget iaText(TextMessage message) => Padding(
-        padding: const EdgeInsets.only(top: 15),
-        child: Stack(
-          alignment: Alignment.topLeft,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(right: 15, top: 15),
-              padding: const EdgeInsets.all(15),
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(1),
-                      topRight: Radius.circular(25),
-                      bottomLeft: Radius.circular(1),
-                      bottomRight: Radius.circular(5)),
-                  color: AppColors.primaryColorDark),
-              child: _markdownWidget(message.text)
-                  .animate()
-                  .moveX(begin: -200, end: 0),
-            ),
-            Container(
-              color: AppColors.secundaryColor,
-              margin: const EdgeInsets.only(bottom: 5),
-              padding: const EdgeInsets.only(left: 15, right: 15),
-              child: Text(message.sender.value),
-            )
-          ],
+  Widget failed() => const Center(
+        child: Text(
+          'Não foi possível iniciar o chat.',
+          style: AppTextStyles.labelStyleMedium,
         ),
       );
 
-  Widget userText(TextMessage message) => Padding(
-        padding: const EdgeInsets.only(top: 15),
-        child: Stack(
-          alignment: Alignment.topRight,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(left: 15, top: 15),
-              padding: const EdgeInsets.all(15),
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(25),
-                      topRight: Radius.circular(1),
-                      bottomLeft: Radius.circular(5),
-                      bottomRight: Radius.circular(5)),
-                  color: AppColors.primaryColor),
-              child: _markdownWidget(message.text)
-                  .animate()
-                  .moveX(begin: -200, end: 0),
-            ),
-            Container(
-              color: AppColors.secundaryColor,
-              margin: const EdgeInsets.only(bottom: 5),
-              padding: const EdgeInsets.only(left: 15, right: 15),
-              child: Text(message.sender.value),
-            )
-          ],
-        ),
-      ).animate().moveX(begin: 200, end: 0);
-
-  Widget chatWidget() => Expanded(
-        child: Selector<ChatProvider, ChatProviderStatus>(
-            selector: (context, provider) => provider.status,
-            builder: (context, status, child) => switch (status) {
-                  ChatProviderStatus.initialized => initChat(),
-                  ChatProviderStatus.loading => loadingChat(),
-                  ChatProviderStatus.loaded => loadedChat(),
-                  ChatProviderStatus.failed => const Center(child: Text('Não foi possível iniciar o chat.', style: AppTextStyles.labelStyleMedium,),)
-                }),
+  Widget init() => InitChatWidget(
+        registry: widget.registry,
+        textMessageController: _textMessageController,
       );
 
-  Widget chatField(IconData icon, String title, String furtherInfo) =>
-      Container(
-        margin: const EdgeInsets.only(bottom: 15),
-        decoration: BoxDecoration(
-            color: AppColors.backgroundColor,
-            border: const Border(
-                top: BorderSide(width: 1, color: AppColors.primaryColorDark)),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(0),
-              topRight: Radius.circular(0),
-              bottomLeft: Radius.circular(5),
-              bottomRight: Radius.circular(25),
-            ),
-            boxShadow: [
-              BoxShadow(
-                  blurRadius: 1,
-                  spreadRadius: 0,
-                  color: Colors.black.withAlpha(100),
-                  offset: const Offset(1, 1))
-            ]),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Flexible(
-              child: Container(
-                decoration: const ShapeDecoration(
-                  shape: RoundedRectangleBorder(),
-                ),
-                child: TextField(
-                  controller: TextEditingController(),
-                  style: AppTextStyles.titleStyleSmall,
-                  maxLines: 3,
-                  maxLength: 50,
-                  decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      hintStyle: AppTextStyles.titleStyleSmall,
-                      hintText: 'Digite algo...',
-                      contentPadding: EdgeInsets.all(15)),
-                ),
-              ),
-            ),
-            Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(0),
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(5),
-                      topRight: Radius.circular(5),
-                      bottomLeft: Radius.circular(5),
-                      bottomRight: Radius.circular(25)),
-                  gradient: AppGradients.positiveActionColors),
-              height: 50,
-              width: 100,
-              child: const Text(
-                'Enviar',
-                style: AppTextStyles.labelStyleSmall,
-                softWrap: true,
-              ),
-            )
-          ],
+  Widget loaded() => Padding(
+        padding: const EdgeInsets.only(left: 15, right: 15),
+        child: LoadedChatWidget(
+          textMessageController: _textMessageController,
         ),
       );
 
@@ -307,24 +116,21 @@ class _ChatPageState extends State<ChatPage> with CommonWidgets {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 10,
+        toolbarHeight: 50,
+        centerTitle: true,
+        title: Text(widget.registry.description),
       ),
-      backgroundColor: AppColors.backgroundColor,
+      persistentFooterAlignment: AlignmentDirectional.center,
       body: Container(
-        margin: const EdgeInsets.only(left: 5, right: 5, top: 15),
-        decoration: const BoxDecoration(gradient: AppGradients.primaryColors),
-        child: Column(
-          children: [
-            titleContainer(
-              widget.registry.topic,
-              backAction: () {
-                Navigator.pop(context);
-              },
-            ),
-            chatWidget(),
-            // chatField(Icons.circle, 'a', 'a'),
-          ],
-        ),
+        decoration: const BoxDecoration(color: AppColors.primaryColorLight),
+        child: Selector<ChatProvider, ChatProviderStatus>(
+            selector: (context, provider) => provider.status,
+            builder: (context, status, child) => switch (status) {
+                  ChatProviderStatus.init => init(),
+                  ChatProviderStatus.loading => loading(),
+                  ChatProviderStatus.loaded => loaded(),
+                  ChatProviderStatus.failed => failed(),
+                }),
       ),
     );
   }

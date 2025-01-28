@@ -1,7 +1,7 @@
 abstract class RegistryDbModel{
   static const _tableName = 'Registries';
   static const List<String> _textFields = [
-    'id INTEGER PRIMARY KEY AUTOINCREMENT',
+    'id INTEGER PRIMARY KEY',
     'topic TEXT NOT NULL',
     'description TEXT NOT NULL',
     'content_name TEXT',

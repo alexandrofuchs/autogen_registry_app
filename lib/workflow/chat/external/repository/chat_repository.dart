@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:plain_registry_app/core/response/i_response_result.dart';
 import 'package:plain_registry_app/workflow/chat/domain/i_repositories/i_chat_repository.dart';
 import 'package:plain_registry_app/workflow/chat/domain/models/chat.dart';
-import 'package:plain_registry_app/workflow/chat/domain/models/saved_text_message_model.dart';
 import 'package:plain_registry_app/workflow/chat/domain/models/text_message.dart';
 import 'package:plain_registry_app/workflow/home/domain/models/registry_model.dart';
 import 'package:sqflite/sqflite.dart';
@@ -26,9 +25,21 @@ class ChatRepository implements IChatRepository {
   } 
 
   @override
-  Future<IResponseResult<int>> saveChat(Chat chat) async {
+  Future<IResponseResult<Chat>> saveChat(Chat chat) async {
     try {
-      final response = await _database.insert('Registries', chat.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+      final response = await _database.insert('Registries', chat.toMap(), conflictAlgorithm: ConflictAlgorithm.fail);
+      return await loadPreviousChat(response);
+    } catch (e) {
+      return Fail('Não foi possível salvar o chat', e);
+    }
+  }
+  
+  @override
+  Future<IResponseResult<int>> saveMessages(int chatId, List<TextMessage> messages) async {
+    try {
+      final response = await _database.update('Registries', {
+        'content_data': jsonEncode(messages.map((e) => e.toMap()).toList()),
+      }, where: 'id = ?', whereArgs: [chatId], );
       return Success(response);
     } catch (e) {
       return Fail('Não foi possível salvar o chat', e);

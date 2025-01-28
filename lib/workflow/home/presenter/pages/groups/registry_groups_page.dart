@@ -5,7 +5,6 @@ import 'package:plain_registry_app/core/widgets/appbar/appbar_widgets.dart';
 import 'package:plain_registry_app/core/widgets/searchbar/searchbar_widget.dart';
 import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
 import 'package:plain_registry_app/root/app_router.dart';
-import 'package:plain_registry_app/workflow/chat/chat_worflow.dart';
 import 'package:plain_registry_app/workflow/home/home_worflow.dart';
 import 'package:plain_registry_app/workflow/home/presenter/widgets/registries_widgets.dart';
 import 'package:plain_registry_app/workflow/home/presenter/pages/groups/registry_groups_provider.dart';
@@ -100,10 +99,12 @@ class _RegistryGroupsPageState extends State<RegistryGroupsPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 0,
+        toolbarHeight: 50,
         backgroundColor: AppColors.primaryColor,
       ),
       persistentFooterAlignment: AlignmentDirectional.bottomCenter,
+      
+      
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: newRegistryFooter(context),
       body: Selector<RegistryGroupsProvider, RegistryGroupsProviderStatus>(

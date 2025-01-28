@@ -14,11 +14,23 @@ class RegistriesProvider extends ChangeNotifier {
   List<RegistryModel>? _registries;
 
   String errorText = '';
+  String _filterText = '';
 
   RegistriesProviderStatus _status = RegistriesProviderStatus.loading;
   RegistriesProviderStatus get status => _status;
 
-  List<RegistryModel> get registries => _registries!;
+  List<RegistryModel> get registries => 
+    _filterText.isEmpty ?
+    (_registries ?? []) :
+    (_registries ?? []).where((e) => e.topic.contains(_filterText)).toList();
+
+  String get filterText => _filterText;
+  
+  set filterText(String value){
+    _filterText = value;
+    _status = RegistriesProviderStatus.loaded;
+    notifyListeners();
+  }
 
   RegistriesProvider(this._repository);
 

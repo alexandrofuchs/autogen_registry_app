@@ -11,6 +11,15 @@ abstract class AppGradients {
     end: Alignment.bottomCenter,
   );
 
+  static const LinearGradient primaryColorsDark = LinearGradient(
+    colors: [
+      AppColors.primaryColor,
+      AppColors.primaryColorDark,
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
   static const LinearGradient actionColors = LinearGradient(
     colors: [
       AppColors.primaryColorLight,

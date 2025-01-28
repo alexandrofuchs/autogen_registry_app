@@ -8,7 +8,7 @@ abstract class AppColors {
   static const Color secundaryColor = Color(0xffffffff);
 
   static const Color greenDark = Color(0xff009343);
-  static const Color greenLight = Color(0xff41ce9f);
+  static const Color greenLight = Color.fromARGB(255, 104, 255, 205);
 
   static const Color orangeDark = Color(0xffFF3A3A);
   static const Color orangeLight = Color(0xffFF7474);

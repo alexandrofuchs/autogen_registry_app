@@ -2,14 +2,19 @@ import 'package:equatable/equatable.dart';
 
 part 'enums/message_sender.dart';
 
-abstract class TextMessage extends Equatable {
+class TextMessage extends Equatable {
+  final int id;
   final MessageSender sender;
   final String text;
 
-  const TextMessage({required this.sender, required this.text});
+  const TextMessage({required this.id, required this.sender, required this.text});
 
   @override
-  List<Object?> get props => [text, sender.value];
+  List<Object?> get props => [id, sender.value];
 
-  Map<String, dynamic> toMap();
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'role': sender.value,
+        'text': text,
+      };
 }

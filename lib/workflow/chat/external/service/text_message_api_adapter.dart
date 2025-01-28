@@ -1,7 +1,8 @@
 part of 'text_message_service.dart';
 
-extension NewTextMessageApiAdapter on NewTextMessageModel {
-  static TextMessage fromMap(Map<String, dynamic> map) => NewTextMessageModel(
+extension NewTextMessageApiAdapter on TextMessage {
+  static TextMessage fromMap(Map<String, dynamic> map) => TextMessage(
+      id: DateTime.now().millisecondsSinceEpoch,
       sender: MessageSender.fromValue(map['candidates'][0]['content']['role']),
       text: map['candidates'][0]['content']['parts'][0]['text']);
 

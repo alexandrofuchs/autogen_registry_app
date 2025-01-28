@@ -17,7 +17,7 @@ abstract class ChatWorkflow {
     GetIt.I.registerLazySingleton<IChatRepository>(() => ChatRepository(GetIt.I.get()));
   }
 
-  static Widget page(RegistryModel model) =>
+  static Widget chatPage(RegistryModel model) =>
     ChangeNotifierProvider<ChatProvider>(create:(context) => ChatProvider(GetIt.I.get()),
     child: ChatPage(registry: model),
     );

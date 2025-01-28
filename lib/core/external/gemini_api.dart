@@ -24,17 +24,19 @@ class GeminiApi {
     }
   }
 
-  Future<dynamic> generateText(Map<String, dynamic> content) async {
+  Future<dynamic> generateText(Map<String, dynamic> contentData) async {
     try {
-      // var response = await http.post(_baseURI, body: jsonEncode(content));
+      // var response = await http.post(_baseURI, body: jsonEncode(contentData));
       // print('Response status: ${response.statusCode}');
       // return jsonDecode(response.body);
+      final content = jsonDecode(await rootBundle.loadString('mocks/gemini_markdown_sample.json'));
+
       return {
         "candidates": [
           {
             "content": {
               "parts": [
-                {"text": "A última coisa que você me disse foi \"batata\".\n"}
+                {"text": content['content']}
               ],
               "role": "model"
             },
