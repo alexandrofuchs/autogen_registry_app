@@ -1,4 +1,4 @@
-package com.alexandrofuchs.plain_registry_app
+package com.alexandrofuchs.autogen_registry_app
 
 import io.flutter.embedding.android.FlutterActivity
 

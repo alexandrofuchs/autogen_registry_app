@@ -1,6 +1,6 @@
-import 'package:plain_registry_app/core/response/i_response_result.dart';
-import 'package:plain_registry_app/workflow/chat/domain/models/chat.dart';
-import 'package:plain_registry_app/workflow/chat/domain/models/text_message.dart';
+import 'package:autogen_registry_app/core/response/i_response_result.dart';
+import 'package:autogen_registry_app/workflow/chat/domain/models/chat.dart';
+import 'package:autogen_registry_app/workflow/chat/domain/models/text_message.dart';
 
 abstract class IChatRepository {
   Future<IResponseResult<Chat>> saveChat(Chat chat);

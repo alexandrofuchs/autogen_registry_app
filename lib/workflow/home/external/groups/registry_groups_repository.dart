@@ -1,5 +1,5 @@
-import 'package:plain_registry_app/core/response/i_response_result.dart';
-import 'package:plain_registry_app/workflow/home/domain/i_repositories/i_registry_groups_repository.dart';
+import 'package:autogen_registry_app/core/response/i_response_result.dart';
+import 'package:autogen_registry_app/workflow/home/domain/i_repositories/i_registry_groups_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
 part 'registry_groups_adapter.dart';

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:plain_registry_app/core/common/text_input/text_input_validator.dart';
-import 'package:plain_registry_app/core/common/text_input/text_input_builder.dart';
-import 'package:plain_registry_app/core/theme/app_colors.dart';
-import 'package:plain_registry_app/core/theme/app_gradients.dart';
-import 'package:plain_registry_app/core/theme/app_text_styles.dart';
-import 'package:plain_registry_app/core/widgets/appbar/appbar_widgets.dart';
-import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
-import 'package:plain_registry_app/core/widgets/snackbars/app_snackbars.dart';
-import 'package:plain_registry_app/workflow/home/domain/models/registry_model.dart';
-import 'package:plain_registry_app/workflow/chat/presenter/chat_page.dart';
-import 'package:plain_registry_app/workflow/chat/presenter/chat_provider.dart';
-import 'package:plain_registry_app/workflow/home/presenter/pages/groups/registry_groups_provider.dart';
-import 'package:plain_registry_app/root/app_router.dart';
+import 'package:autogen_registry_app/core/common/text_input/text_input_validator.dart';
+import 'package:autogen_registry_app/core/common/text_input/text_input_builder.dart';
+import 'package:autogen_registry_app/core/theme/app_colors.dart';
+import 'package:autogen_registry_app/core/theme/app_gradients.dart';
+import 'package:autogen_registry_app/core/theme/app_text_styles.dart';
+import 'package:autogen_registry_app/core/widgets/appbar/appbar_widgets.dart';
+import 'package:autogen_registry_app/core/widgets/common/common_widgets.dart';
+import 'package:autogen_registry_app/core/widgets/snackbars/app_snackbars.dart';
+import 'package:autogen_registry_app/workflow/home/domain/models/registry_model.dart';
+import 'package:autogen_registry_app/workflow/chat/presenter/chat_page.dart';
+import 'package:autogen_registry_app/workflow/chat/presenter/chat_provider.dart';
+import 'package:autogen_registry_app/workflow/home/presenter/pages/groups/registry_groups_provider.dart';
+import 'package:autogen_registry_app/root/app_router.dart';
 import 'package:provider/provider.dart';
 
 class NewRegistryPage extends StatefulWidget {

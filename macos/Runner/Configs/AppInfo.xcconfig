@@ -5,7 +5,7 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = plain_registry_app
+PRODUCT_NAME = autogen_registry_app
 
 // The application's bundle identifier
 PRODUCT_BUNDLE_IDENTIFIER = com.alexandrofuchs.plainRegistryApp

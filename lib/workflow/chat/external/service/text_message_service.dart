@@ -1,7 +1,7 @@
-import 'package:plain_registry_app/core/external/gemini_api.dart';
-import 'package:plain_registry_app/core/response/i_response_result.dart';
-import 'package:plain_registry_app/workflow/chat/domain/models/text_message.dart';
-import 'package:plain_registry_app/workflow/chat/domain/i_services/i_text_message_service.dart';
+import 'package:autogen_registry_app/core/external/gemini_api.dart';
+import 'package:autogen_registry_app/core/response/i_response_result.dart';
+import 'package:autogen_registry_app/workflow/chat/domain/models/text_message.dart';
+import 'package:autogen_registry_app/workflow/chat/domain/i_services/i_text_message_service.dart';
 
 part 'text_message_api_adapter.dart';
 

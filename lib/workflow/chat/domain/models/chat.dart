@@ -1,5 +1,5 @@
-import 'package:plain_registry_app/workflow/chat/domain/models/text_message.dart';
-import 'package:plain_registry_app/workflow/home/domain/models/registry_model.dart';
+import 'package:autogen_registry_app/workflow/chat/domain/models/text_message.dart';
+import 'package:autogen_registry_app/workflow/home/domain/models/registry_model.dart';
 
 class Chat extends RegistryModel<List<TextMessage>> {
   List<TextMessage> get messages => contentData;

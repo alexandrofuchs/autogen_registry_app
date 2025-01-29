@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:plain_registry_app/core/response/i_response_result.dart';
-import 'package:plain_registry_app/workflow/chat/domain/i_repositories/i_chat_repository.dart';
-import 'package:plain_registry_app/workflow/chat/domain/models/chat.dart';
-import 'package:plain_registry_app/workflow/chat/domain/models/text_message.dart';
-import 'package:plain_registry_app/workflow/home/domain/models/registry_model.dart';
+import 'package:autogen_registry_app/core/response/i_response_result.dart';
+import 'package:autogen_registry_app/workflow/chat/domain/i_repositories/i_chat_repository.dart';
+import 'package:autogen_registry_app/workflow/chat/domain/models/chat.dart';
+import 'package:autogen_registry_app/workflow/chat/domain/models/text_message.dart';
+import 'package:autogen_registry_app/workflow/home/domain/models/registry_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 part 'chat_local_db_adapter.dart';

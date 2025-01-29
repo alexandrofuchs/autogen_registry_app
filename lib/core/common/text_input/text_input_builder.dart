@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:plain_registry_app/core/common/text_input/text_input_validator.dart';
-import 'package:plain_registry_app/core/theme/app_colors.dart';
-import 'package:plain_registry_app/core/theme/app_text_styles.dart';
+import 'package:autogen_registry_app/core/common/text_input/text_input_validator.dart';
+import 'package:autogen_registry_app/core/theme/app_colors.dart';
+import 'package:autogen_registry_app/core/theme/app_text_styles.dart';
 
 class TextInputBuilder extends StatelessWidget {
   final String label;

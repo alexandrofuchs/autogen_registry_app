@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
-import 'package:plain_registry_app/data/local_database/models/registry/registry_db_model.dart';
+import 'package:autogen_registry_app/data/local_database/models/registry/registry_db_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AppLocalDb {
@@ -15,7 +15,7 @@ class AppLocalDb {
   Future<void> loadDataBase() async {
     try {
       var databasesPath = await getDatabasesPath();
-      String path = join(databasesPath, 'registry_app.db');
+      String path = join(databasesPath, 'autogen_registry_app.db');
 
       localDatabase = await openDatabase(path,
         onOpen: (db) async {

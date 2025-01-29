@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
-import 'package:plain_registry_app/root/app_router.dart';
-import 'package:plain_registry_app/workflow/home/presenter/pages/new_registry/new_registry_page.dart';
-import 'package:plain_registry_app/workflow/home/presenter/pages/groups/registry_groups_provider.dart';
+import 'package:autogen_registry_app/core/widgets/common/common_widgets.dart';
+import 'package:autogen_registry_app/root/app_router.dart';
+import 'package:autogen_registry_app/workflow/home/presenter/pages/new_registry/new_registry_page.dart';
+import 'package:autogen_registry_app/workflow/home/presenter/pages/groups/registry_groups_provider.dart';
 import 'package:provider/provider.dart';
 
 mixin RegistriesWidgets on CommonWidgets {

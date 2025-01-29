@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.alexandrofuchs" "\0"
-            VALUE "FileDescription", "plain_registry_app" "\0"
+            VALUE "FileDescription", "autogen_registry_app" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "plain_registry_app" "\0"
+            VALUE "InternalName", "autogen_registry_app" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 com.alexandrofuchs. All rights reserved." "\0"
-            VALUE "OriginalFilename", "plain_registry_app.exe" "\0"
-            VALUE "ProductName", "plain_registry_app" "\0"
+            VALUE "OriginalFilename", "autogen_registry_app.exe" "\0"
+            VALUE "ProductName", "autogen_registry_app" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

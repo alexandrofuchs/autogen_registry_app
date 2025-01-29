@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:plain_registry_app/core/theme/app_colors.dart';
-import 'package:plain_registry_app/core/theme/app_gradients.dart';
-import 'package:plain_registry_app/core/theme/app_text_styles.dart';
-import 'package:plain_registry_app/core/widgets/appbar/appbar_widgets.dart';
-import 'package:plain_registry_app/core/widgets/searchbar/searchbar_widget.dart';
-import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
-import 'package:plain_registry_app/root/app_router.dart';
-import 'package:plain_registry_app/workflow/home/home_worflow.dart';
-import 'package:plain_registry_app/workflow/home/presenter/widgets/registries_widgets.dart';
-import 'package:plain_registry_app/workflow/home/presenter/pages/groups/registry_groups_provider.dart';
+import 'package:autogen_registry_app/core/theme/app_colors.dart';
+import 'package:autogen_registry_app/core/theme/app_gradients.dart';
+import 'package:autogen_registry_app/core/theme/app_text_styles.dart';
+import 'package:autogen_registry_app/core/widgets/appbar/appbar_widgets.dart';
+import 'package:autogen_registry_app/core/widgets/searchbar/searchbar_widget.dart';
+import 'package:autogen_registry_app/core/widgets/common/common_widgets.dart';
+import 'package:autogen_registry_app/root/app_router.dart';
+import 'package:autogen_registry_app/workflow/home/home_worflow.dart';
+import 'package:autogen_registry_app/workflow/home/presenter/widgets/registries_widgets.dart';
+import 'package:autogen_registry_app/workflow/home/presenter/pages/groups/registry_groups_provider.dart';
 import 'package:provider/provider.dart';
 
 class RegistryGroupsPage extends StatefulWidget {
@@ -104,7 +104,7 @@ class _RegistryGroupsPageState extends State<RegistryGroupsPage>
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('GRUPOS DE REGISTRO'),
+        title: const Text('REGISTRAI: Grupos'),
       ),
       persistentFooterAlignment: AlignmentDirectional.bottomCenter,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

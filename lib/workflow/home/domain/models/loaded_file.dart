@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
-import 'package:plain_registry_app/core/helpers/extensions/list_extension.dart';
+import 'package:autogen_registry_app/core/helpers/extensions/list_extension.dart';
 
 enum MediaType {
   image('image', 'Foto'),

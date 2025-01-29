@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:plain_registry_app/workflow/home/domain/i_repositories/i_registry_groups_repository.dart';
+import 'package:autogen_registry_app/workflow/home/domain/i_repositories/i_registry_groups_repository.dart';
 
 enum RegistryGroupsProviderStatus {
   loading,

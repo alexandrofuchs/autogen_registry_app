@@ -1,6 +1,6 @@
 {
-    "name": "plain_registry_app",
-    "short_name": "plain_registry_app",
+    "name": "autogen_registry_app",
+    "short_name": "autogen_registry_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:plain_registry_app/workflow/chat/domain/i_repositories/i_chat_repository.dart';
-import 'package:plain_registry_app/workflow/chat/domain/models/chat.dart';
-import 'package:plain_registry_app/workflow/chat/domain/models/text_message.dart';
+import 'package:autogen_registry_app/workflow/chat/domain/i_repositories/i_chat_repository.dart';
+import 'package:autogen_registry_app/workflow/chat/domain/models/chat.dart';
+import 'package:autogen_registry_app/workflow/chat/domain/models/text_message.dart';
 
 enum ChatProviderStatus {
   loading,

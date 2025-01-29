@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:plain_registry_app/core/theme/app_colors.dart';
+import 'package:autogen_registry_app/core/theme/app_colors.dart';
 
 abstract class AppSnackbars {
   static SnackBar _snackBar(BuildContext context, Duration duration,

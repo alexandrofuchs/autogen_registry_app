@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:plain_registry_app/core/theme/app_colors.dart';
+import 'package:autogen_registry_app/core/theme/app_colors.dart';
 
 abstract class AppTextStyles {
   static const TextStyle titleStyleLarge = TextStyle(color: AppColors.primaryColorDark, fontSize: 18, fontWeight: FontWeight.w500);

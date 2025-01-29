@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:plain_registry_app/core/helpers/formatters/datetime_formatters.dart';
-import 'package:plain_registry_app/core/theme/app_colors.dart';
-import 'package:plain_registry_app/core/theme/app_gradients.dart';
-import 'package:plain_registry_app/core/theme/app_text_styles.dart';
-import 'package:plain_registry_app/core/widgets/appbar/appbar_widgets.dart';
-import 'package:plain_registry_app/core/widgets/searchbar/searchbar_widget.dart';
-import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
-import 'package:plain_registry_app/core/widgets/snackbars/app_snackbars.dart';
-import 'package:plain_registry_app/root/app_router.dart';
-import 'package:plain_registry_app/workflow/chat/chat_worflow.dart';
-import 'package:plain_registry_app/workflow/home/domain/models/registry_model.dart';
-import 'package:plain_registry_app/workflow/home/presenter/widgets/registries_widgets.dart';
-import 'package:plain_registry_app/workflow/home/presenter/pages/registries/registries_provider.dart';
+import 'package:autogen_registry_app/core/helpers/formatters/datetime_formatters.dart';
+import 'package:autogen_registry_app/core/theme/app_colors.dart';
+import 'package:autogen_registry_app/core/theme/app_gradients.dart';
+import 'package:autogen_registry_app/core/theme/app_text_styles.dart';
+import 'package:autogen_registry_app/core/widgets/appbar/appbar_widgets.dart';
+import 'package:autogen_registry_app/core/widgets/searchbar/searchbar_widget.dart';
+import 'package:autogen_registry_app/core/widgets/common/common_widgets.dart';
+import 'package:autogen_registry_app/core/widgets/snackbars/app_snackbars.dart';
+import 'package:autogen_registry_app/root/app_router.dart';
+import 'package:autogen_registry_app/workflow/chat/chat_worflow.dart';
+import 'package:autogen_registry_app/workflow/home/domain/models/registry_model.dart';
+import 'package:autogen_registry_app/workflow/home/presenter/widgets/registries_widgets.dart';
+import 'package:autogen_registry_app/workflow/home/presenter/pages/registries/registries_provider.dart';
 import 'package:provider/provider.dart';
 
 class OpenedRegistriesGroupPage extends StatefulWidget {
