@@ -26,31 +26,9 @@ class GeminiApi {
 
   Future<dynamic> generateText(Map<String, dynamic> contentData) async {
     try {
-      // var response = await http.post(_baseURI, body: jsonEncode(contentData));
-      // print('Response status: ${response.statusCode}');
-      // return jsonDecode(response.body);
-      final content = jsonDecode(await rootBundle.loadString('mocks/gemini_markdown_sample.json'));
-
-      return {
-        "candidates": [
-          {
-            "content": {
-              "parts": [
-                {"text": content['content']}
-              ],
-              "role": "model"
-            },
-            "finishReason": "STOP",
-            "avgLogprobs": -0.003488737803239089
-          }
-        ],
-        "usageMetadata": {
-          "promptTokenCount": 12,
-          "candidatesTokenCount": 13,
-          "totalTokenCount": 25
-        },
-        "modelVersion": "gemini-1.5-flash"
-      };
+      var response = await http.post(_baseURI, body: jsonEncode(contentData));
+      debugPrint('Response status: ${response.statusCode}');
+      return jsonDecode(response.body);
     } catch (e) {
       debugPrint(e.toString());
       return null;

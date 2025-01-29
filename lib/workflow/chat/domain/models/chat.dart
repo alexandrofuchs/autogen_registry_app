@@ -17,4 +17,14 @@ class Chat extends RegistryModel<List<TextMessage>> {
 
   @override
   List<Object?> get props => [id, topic];
+
+  Chat copyWith(List<TextMessage> messages) =>
+    Chat(id: id, 
+    topic: topic, 
+    contentName: contentName, 
+    contentData:  messages, 
+    contentType: contentType, 
+    description: description, 
+    group: group, 
+    dateTime: dateTime);
 }

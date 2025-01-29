@@ -7,10 +7,12 @@ import 'package:get_it/get_it.dart';
 import 'package:plain_registry_app/core/common/text_input/text_input_validator.dart';
 import 'package:plain_registry_app/core/common/text_input/text_input_builder.dart';
 import 'package:plain_registry_app/core/helpers/formatters/datetime_formatters.dart';
+import 'package:plain_registry_app/core/helpers/formatters/string_formatters.dart';
 import 'package:plain_registry_app/core/theme/app_colors.dart';
 import 'package:plain_registry_app/core/theme/app_gradients.dart';
 import 'package:plain_registry_app/core/theme/app_text_styles.dart';
 import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
+import 'package:plain_registry_app/core/widgets/snackbars/app_snackbars.dart';
 import 'package:plain_registry_app/workflow/chat/domain/models/chat.dart';
 import 'package:plain_registry_app/workflow/chat/domain/models/text_message.dart';
 import 'package:plain_registry_app/workflow/chat/presenter/chat_provider.dart';
@@ -35,6 +37,8 @@ class _ChatPageState extends State<ChatPage> with CommonWidgets {
 
   late final StreamSubscription<List<TextMessage>> _textMessageSubscription;
 
+  final ValueNotifier<bool> loadingMessage = ValueNotifier(false);
+
   @override
   initState() {
     _initChat();
@@ -55,6 +59,7 @@ class _ChatPageState extends State<ChatPage> with CommonWidgets {
   dispose() {
     _textMessageController.dispose();
     _textMessageSubscription.cancel();
+    loadingMessage.dispose();
     super.dispose();
   }
 
@@ -63,8 +68,6 @@ class _ChatPageState extends State<ChatPage> with CommonWidgets {
       _textMessageSubscription =
           _textMessageController.onNewMessage.listen((data) {
         if (mounted) {
-          print('SALVEEEE');
-
           switch(context.read<ChatProvider>().status){
             case ChatProviderStatus.init:
               context.read<ChatProvider>().saveChat(Chat(
@@ -85,6 +88,7 @@ class _ChatPageState extends State<ChatPage> with CommonWidgets {
 
           
         }
+        loadingMessage.value = false;
       });
     } catch (e) {
       debugPrint(e.toString());
@@ -102,12 +106,14 @@ class _ChatPageState extends State<ChatPage> with CommonWidgets {
 
   Widget init() => InitChatWidget(
         registry: widget.registry,
+        loadingMessage: loadingMessage,
         textMessageController: _textMessageController,
       );
 
   Widget loaded() => Padding(
         padding: const EdgeInsets.only(left: 15, right: 15),
         child: LoadedChatWidget(
+          loadingMessage: loadingMessage,
           textMessageController: _textMessageController,
         ),
       );
@@ -116,13 +122,22 @@ class _ChatPageState extends State<ChatPage> with CommonWidgets {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 50,
+        toolbarHeight: 75,
         centerTitle: true,
-        title: Text(widget.registry.description),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(widget.registry.description.toUpperCaseFirst()),
+            IconButton(onPressed: (){
+              AppSnackbars.showErrorSnackbar(context, 'Ainda não implementado');
+            }, icon: const Icon(Icons.notification_add))
+          ],
+        ),
       ),
+      
       persistentFooterAlignment: AlignmentDirectional.center,
       body: Container(
-        decoration: const BoxDecoration(color: AppColors.primaryColorLight),
+        decoration: const BoxDecoration(gradient: AppGradients.primaryColors),
         child: Selector<ChatProvider, ChatProviderStatus>(
             selector: (context, provider) => provider.status,
             builder: (context, status, child) => switch (status) {

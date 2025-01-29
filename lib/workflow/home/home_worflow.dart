@@ -22,7 +22,7 @@ abstract class HomeWorflow {
   }
 
   static Widget openedRegistryGroupPage(String param) =>
-    ChangeNotifierProvider<RegistriesProvider>(create:(context) => RegistriesProvider(GetIt.I.get())..loadByGroup(param),
+    ChangeNotifierProvider<RegistriesProvider>(create:(context) => RegistriesProvider(GetIt.I.get()),
     child: OpenedRegistriesGroupPage(group: param),
     );
 

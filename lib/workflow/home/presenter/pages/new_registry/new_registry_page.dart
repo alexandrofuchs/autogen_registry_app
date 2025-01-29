@@ -167,17 +167,8 @@ class _NewRegistryPageState extends State<NewRegistryPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 50,
         centerTitle: true,
         title: const Text('Novo registro'),
-        bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1),
-            child: Container(
-              decoration: const BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(color: AppColors.secundaryColor))),
-              height: 1,
-            )),
       ),
       resizeToAvoidBottomInset: true,
       persistentFooterAlignment: AlignmentDirectional.bottomCenter,

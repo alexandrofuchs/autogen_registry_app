@@ -5,11 +5,11 @@ import 'package:plain_registry_app/core/theme/app_text_styles.dart';
 
 mixin CommonWidgets {
   Widget titleContainer(String text, {Function()? backAction}) => Container(
-        decoration: const BoxDecoration(
+                decoration: const BoxDecoration(
           border: Border(
-            top:BorderSide(color: AppColors.secundaryColor, width: 1),
-            bottom: BorderSide(color: AppColors.secundaryColor, width: 1)),
-          color: AppColors.primaryColorDark,
+            top: BorderSide(color: AppColors.secundaryColor, width: 2)),
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+          gradient: AppGradients.primaryColorsDark,
         ),
         height: 50,
         child: Row(
@@ -48,78 +48,7 @@ mixin CommonWidgets {
         child: Divider(),
       );
 
-  Widget item(IconData icon, String title, String furtherInfo) => Container(
-        margin: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-            color: AppColors.secundaryColor,
-            border: Border.all(width: 0.5, color: AppColors.primaryColorDark),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(25),
-              topRight: Radius.circular(25),
-              bottomLeft: Radius.circular(25),
-              bottomRight: Radius.circular(25),
-            ),
-            boxShadow: [
-              BoxShadow(
-                  blurRadius: 1,
-                  spreadRadius: 0,
-                  color: Colors.black.withAlpha(100),
-                  offset: const Offset(1, 1))
-            ]),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 15, left: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Icon(icon),
-                  const SizedBox(width: 15),
-                  Text(
-                    title,
-                    softWrap: true,
-                    style: AppTextStyles.bodyStyleMedium,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 25, right: 15),
-                  child: Text(
-                    furtherInfo,
-                    style: AppTextStyles.bodyStyleSmall,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(25),
-                            bottomRight: Radius.circular(25)),
-                        gradient: AppGradients.primaryColors),
-                    height: 45,
-                    width: 100,
-                    child: const Text(
-                      'excluir',
-                      style: AppTextStyles.labelStyleSmall,
-                      softWrap: true,
-                    ),
-                  ),
-                )
-              ],
-            )
-          ],
-        ),
-      );
+  
 
   Widget _filterItem(String label) => Container(
         decoration: BoxDecoration(
@@ -181,7 +110,6 @@ mixin CommonWidgets {
                   blurRadius: 2,
                 )
               ],
-              gradient: AppGradients.actionColors,
               borderRadius: BorderRadius.only(
                   topRight: Radius.circular(10),
                   bottomRight: Radius.circular(10),
@@ -190,7 +118,7 @@ mixin CommonWidgets {
             ),
             padding: const EdgeInsets.only(left: 8),
             width: 150,
-            height: 50,
+            height: 45,
             child: Row(
               children: [
                 Icon(
@@ -200,7 +128,7 @@ mixin CommonWidgets {
                 Expanded(
                   child: Text(
                     label,
-                    style: AppTextStyles.labelStyleLarge.copyWith(
+                    style: AppTextStyles.labelStyleSmall.copyWith(
                         color: enable
                             ? AppColors.secundaryColor
                             : AppColors.primaryColorDark),
@@ -304,7 +232,7 @@ mixin CommonWidgets {
             Flexible(
                 child: Text(
               text,
-              style: AppTextStyles.labelStyleMedium,
+              style: AppTextStyles.labelStyleMedium.copyWith(color: AppColors.secundaryColor),
               softWrap: true,
             )),
           ],

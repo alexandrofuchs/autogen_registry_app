@@ -26,9 +26,6 @@ class ChatProvider extends ChangeNotifier {
   ChatProviderStatus get status => _status;
 
   Future<void> loadChat(int id) async {
-    // _status = ChatProviderStatus.loading;
-    // notifyListeners();
-
     final response = await _repository.loadPreviousChat(id);
 
     response.resolve(onFail: (err) {
@@ -45,7 +42,9 @@ class ChatProvider extends ChangeNotifier {
   Future<void> saveChat(Chat chat) async {
     final response = await _repository.saveChat(chat);
     response.resolve(
-        onFail: (err) {},
+        onFail: (err) {
+          debugPrint(err);
+        },
         onSuccess: (data) {
           _chat = data;
           _status = ChatProviderStatus.loaded;
@@ -56,10 +55,12 @@ class ChatProvider extends ChangeNotifier {
   Future<void> saveMessages(List<TextMessage> messages) async {
     final response = await _repository.saveMessages(chat.id!, messages);
     response.resolve(
-        onFail: (err) {},
+        onFail: (err) {
+          debugPrint('could not save the message: $err');
+        },
         onSuccess: (data) {
-          print('MESSAGE SAVED');
-          print(data);
+          debugPrint('saved chat message: $data');
+          _chat = chat.copyWith(messages);
         });
     notifyListeners();
   }

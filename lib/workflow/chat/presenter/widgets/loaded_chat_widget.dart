@@ -1,9 +1,10 @@
 part of '../chat_page.dart';
 
 class LoadedChatWidget extends StatefulWidget {
+  final ValueNotifier<bool> loadingMessage;
   final TextMessageController textMessageController;
 
-  const LoadedChatWidget({super.key, required this.textMessageController});
+  const LoadedChatWidget({super.key, required this.textMessageController, required this.loadingMessage});
 
   @override
   State<StatefulWidget> createState() => _LoadedChatWidgetState();
@@ -28,24 +29,28 @@ class _LoadedChatWidgetState extends State<LoadedChatWidget>
   }
 
 
-  Future<void> showNewMessageModal([String? text]) async {
+  Future<void> showNewMessageModal([TextMessage? message]) async {
+
+    _messageTextInput.text =  message == null ? '' : 'Detalhe pra mim sobre o seguinte trecho:\n\n "${message.text}"\n\n';
+
      await showModalBottomSheet(
                 context: context,
-                builder: (context) => newMessageField(text),
+                builder: (context) => newMessageField(message),
                 isScrollControlled: true,
               );
   }
 
 
-  Widget _textMessageBody(String text) => Padding(
+  Widget _textMessageBody(TextMessage message) => Padding(
         padding: const EdgeInsets.all(5),
         child: Markdown(
             shrinkWrap: true,
             selectable: true,
             softLineBreak: true,
             onSelectionChanged: (text, selection, cause) async {
+              if(text == null) return;
               debugPrint(text);
-               await showNewMessageModal(text);
+               await showNewMessageModal(TextMessage(id: message.id, sender: message.sender, text: text));
             },
             physics: const NeverScrollableScrollPhysics(),
             styleSheet: MarkdownStyleSheet(
@@ -64,12 +69,20 @@ class _LoadedChatWidgetState extends State<LoadedChatWidget>
               h2: AppTextStyles.labelStyleMedium,
               
             ),
-            data: text.replaceAll('*', '')),
+            data: message.text.replaceAll('**', ' ')),
       );
 
   Widget _textMessageHeader(TextMessage message) => Container(
         alignment: Alignment.topRight,
-        padding: const EdgeInsets.all(15),
+        decoration: ShapeDecoration(shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(100),
+          bottomRight: Radius.circular(100),
+          topRight: Radius.circular(25),
+          bottomLeft: Radius.circular(25)
+          )),
+        color: Colors.black.withAlpha(100)),
+
+        padding: const EdgeInsets.only(right: 25, top: 15, bottom: 15, left: 15),
         child: Text(
           "${message.sender.label} - ${DateTime.fromMillisecondsSinceEpoch(message.id).toDateString()} ${DateTime.fromMillisecondsSinceEpoch(message.id).toHourString()}",
           style: AppTextStyles.labelStyleSmall
@@ -78,89 +91,115 @@ class _LoadedChatWidgetState extends State<LoadedChatWidget>
       );
 
   Widget textMessageWidget(TextMessage message) => Container(
-        margin: const EdgeInsets.only(top: 15, bottom: 7.5),
-        decoration: const ShapeDecoration(
-          shape: RoundedRectangleBorder(
+        margin: const EdgeInsets.only(top: 15, bottom: 7.5, left: 5, right: 5),
+        decoration:  ShapeDecoration(
+          shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(25),
-                  topRight: Radius.circular(5),
-                  bottomLeft: Radius.circular(5),
-                  bottomRight: Radius.circular(25))),
-          gradient: AppGradients.primaryColorsDark,
+                  topLeft: Radius.circular(35),
+                  topRight: Radius.circular(10),
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(35))),
+              shadows: const [
+                BoxShadow(spreadRadius: 1, blurRadius: 5, offset: Offset(0, 0), color: AppColors.primaryColorLight),
+                BoxShadow(color: AppColors.primaryColor),
+              ],
+          color: AppColors.primaryColorDark.withAlpha(0)
         ),
         child: Column(
           children: [
             _textMessageHeader(message),
-            _textMessageBody(message.text),
+            _textMessageBody(message),
           ],
         ).animate().fadeIn(begin: 200, duration: const Duration(milliseconds: 300)),
       );
 
-  Widget newMessageField([String? text]) => Scaffold(
-        appBar: AppBar(toolbarHeight: 10,),
+  Widget title(String text) =>
+    Padding(
+                        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15, top: 25),
+                        child: Text(text, style: AppTextStyles.labelStyleLarge,),
+                      );
+
+  Widget newMessageField([TextMessage? textMessage]) => Scaffold(
+        appBar: AppBar(toolbarHeight: 50),
         backgroundColor: AppColors.primaryColor,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(top: 50),
+            padding: const EdgeInsets.only(top: 0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                titleContainer('Nova mensagem'),
-                text != null ?
-                  ValueListenableBuilder(valueListenable: _messageTextInput.controller, builder:(context, value, child) => Padding(
-                    padding: const EdgeInsets.only(left: 15, right: 15, top: 25),
-                    child: Text(value.text, style: AppTextStyles.labelStyleMedium,),
-                  )) : const SizedBox(),
-            
-                const Padding(
-                  padding: EdgeInsets.only(left: 15, right: 15, bottom: 15, top: 25),
-                  child: Text('Personalize a mensagem abaixo: ', style: AppTextStyles.labelStyleLarge,),
-                ),
                 Expanded(
-                  child: ColoredBox(
-                    color: AppColors.primaryColor,
-                    child: Container(
-                      margin: const EdgeInsets.all(0),
-                      padding: const EdgeInsets.all(0),
-                      decoration: ShapeDecoration(
-                        
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5)),
-                      ),
-                      child: TextInputBuilder(
-                        errorText: 'mensagem invalida',
-                        inputValidator: _messageTextInput..text = text == null? '' : 'Detalhe pra mim sobre o seguinte trecho:\n\n "$text"\n\n',
-                        label: 'Digite sua mensagem...',
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  color: AppColors.primaryColor,
-                  padding: const EdgeInsets.only(bottom: 25),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: ListView(
                     children: [
-                      negativeActionButton('Cancelar', () {
-                        Navigator.pop(context);
-                      }),
-                      positiveActionButton('Enviar', () {
-                        final messages = [
-                          ...context.read<ChatProvider>().chat.messages,
-                          TextMessage(
-                              id: DateTime.now().millisecondsSinceEpoch,
-                              sender: MessageSender.user,
-                              text: _messageTextInput.text)
-                        ];
-            
-                        widget.textMessageController.generateAnswer(messages);
-            
-                        Navigator.pop(context);
-                      }),
+                      titleContainer('Nova mensagem'),
+                      
+                      textMessage != null ?
+                        ValueListenableBuilder(valueListenable: _messageTextInput.controller, builder:(context, value, child) => 
+                          Padding(
+                            padding: const EdgeInsets.all(25),
+                            child: textMessageWidget(textMessage),
+                          )
+                              
+                          
+                        ) : const SizedBox(),
+                  
+                      title('Personalize a sua mensagem abaixo: '),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: actionButton(Icons.clear, 'LIMPAR', (){
+                          _messageTextInput.text = '';
+                        }),
+                      ),
+                      ColoredBox(
+                        color: AppColors.primaryColor,
+                        child: Container(
+                          margin: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(0),
+                          decoration: ShapeDecoration(
+                            
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                          ),
+                          child: TextInputBuilder(
+                            errorText: 'mensagem invalida',
+                            inputValidator: _messageTextInput,
+                            label: 'Digite sua mensagem...',
+                          ),
+                        ),
+                      ),
+                      
                     ],
                   ),
                 ),
+                Container(
+                      color: AppColors.primaryColor,
+                      padding: const EdgeInsets.only(bottom: 25),
+                      child: 
+                        Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          negativeActionButton('Cancelar', () {
+                            Navigator.pop(context);
+                          }),
+                          positiveActionButton('Enviar', ()  {
+                            final messages = [
+                              ...context.read<ChatProvider>().chat.messages,
+                              TextMessage(
+                                  id: DateTime.now().millisecondsSinceEpoch,
+                                  sender: MessageSender.user,
+                                  text: _messageTextInput.text)
+                            ];
+                
+                            widget.loadingMessage.value = true;
+                            widget.textMessageController.generateAnswer(messages);
+                            if(!mounted) return;
+                            Navigator.pop(context);
+                          }),
+                        ],
+                      ),        
+                    
+                    
+                    
+                    ),
               ],
             ),
           ),
@@ -168,11 +207,16 @@ class _LoadedChatWidgetState extends State<LoadedChatWidget>
       );
 
   Widget newMessageWidget() =>
-    GestureDetector(
+    ValueListenableBuilder(
+                          valueListenable: widget.loadingMessage, builder:(context, isLoading, child) => 
+                            isLoading ?
+                              const Center(child: CircularProgressIndicator(),) : child ?? const SizedBox(),
+                              child: GestureDetector(
             onTap: () {
               showNewMessageModal();
             },
-            child: Container(
+            child: 
+            Container(
               alignment: Alignment.center,
               margin: const EdgeInsets.only(top: 15, bottom: 15),
               padding: const EdgeInsets.all(15),
@@ -189,21 +233,22 @@ class _LoadedChatWidgetState extends State<LoadedChatWidget>
                 style: AppTextStyles.labelStyleMedium,
               ),
             ),
-          );
+          ));
 
   Widget tipWidget() =>
     ValueListenableBuilder(valueListenable: showTipText, builder:(context, show, child) => 
       !show ? const SizedBox() :
       Container(
-            margin: const EdgeInsets.all(5),
+            margin: const EdgeInsets.only(top: 15),
             padding: const EdgeInsets.all(25),
             decoration: BoxDecoration(
               
-              borderRadius: BorderRadius.circular(25),
-              color: AppColors.backgroundColor,
+              borderRadius: BorderRadius.circular(5),
               boxShadow: const [
                 
-                BoxShadow(color: AppColors.primaryColor)
+                BoxShadow(color: Colors.white, spreadRadius: 0, blurRadius: 5,
+                  blurStyle: BlurStyle.solid
+                )
               ]
             ),
 

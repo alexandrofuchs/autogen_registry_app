@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plain_registry_app/core/theme/app_colors.dart';
 import 'package:plain_registry_app/core/theme/app_gradients.dart';
+import 'package:plain_registry_app/core/theme/app_text_styles.dart';
 import 'package:plain_registry_app/core/widgets/appbar/appbar_widgets.dart';
 import 'package:plain_registry_app/core/widgets/searchbar/searchbar_widget.dart';
 import 'package:plain_registry_app/core/widgets/common/common_widgets.dart';
@@ -19,7 +20,6 @@ class RegistryGroupsPage extends StatefulWidget {
 
 class _RegistryGroupsPageState extends State<RegistryGroupsPage>
     with SearchbarWidget, AppbarWidgets, CommonWidgets, RegistriesWidgets {
-  
   @override
   void initState() {
     context.read<RegistryGroupsProvider>().load();
@@ -34,18 +34,26 @@ class _RegistryGroupsPageState extends State<RegistryGroupsPage>
   Widget groupWidget(RegistryGroupsProvider provider, int groupIndex) =>
       GestureDetector(
         onTap: () {
-          Navigator.push(context, AppRouter.createRoute(HomeWorflow.openedRegistryGroupPage(provider.groups[groupIndex]), transition: RouteTransition.rightToLeft));
+          Navigator.push(
+              context,
+              AppRouter.createRoute(
+                  HomeWorflow.openedRegistryGroupPage(
+                      provider.groups[groupIndex]),
+                  transition: RouteTransition.rightToLeft));
         },
         child: Container(
-            margin: const EdgeInsets.only(top: 15),
+            margin: const EdgeInsets.only(top: 15, left: 5, right: 5),
             decoration: const BoxDecoration(
-                gradient: AppGradients.primaryColors,
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(25),
-                    topLeft: Radius.circular(100),
-                    bottomRight: Radius.circular(100),
-                    topRight: Radius.circular(25)),
-                boxShadow: [BoxShadow(offset: Offset(0, 1))]),
+              color: AppColors.primaryColorDark,
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(25),
+                  topLeft: Radius.circular(5),
+                  bottomRight: Radius.circular(5),
+                  topRight: Radius.circular(25)),
+              border: Border(
+                  top: BorderSide(color: AppColors.backgroundColor),
+                  bottom: BorderSide(color: AppColors.backgroundColor)),
+            ),
             padding: const EdgeInsets.only(left: 15, right: 15),
             child: Row(
               children: [
@@ -62,49 +70,43 @@ class _RegistryGroupsPageState extends State<RegistryGroupsPage>
             )),
       );
 
-  Widget loadedGroups(RegistryGroupsProvider provider) => Column(
-        children: [
-          pageHeader('Grupos'),
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(top: 15),
-              alignment: Alignment.topCenter,
-              decoration: BoxDecoration(
-                  boxShadow: const [
-                    BoxShadow(
-                      blurRadius: 0,
-                      spreadRadius: 1,
-                      offset: Offset(0, -1),
-                      color: AppColors.primaryColorDark,
-                    )
-                  ],
-                  color: AppColors.backgroundColor,
-                  borderRadius: BorderRadius.circular(25)),
-              padding: const EdgeInsets.all(15),
-              child: provider.groups.isEmpty
-                  ? const Center(
-                      child: Text('Nenhum grupo criado'),
-                    )
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: provider.groups.length,
-                      itemBuilder: (context, groupIndex) => groupWidget(provider, groupIndex),
-                    ),
-            ),
-          ),
-        ],
+  Widget loadedGroups(RegistryGroupsProvider provider) => Container(
+        margin: const EdgeInsets.only(top: 15),
+        alignment: Alignment.topCenter,
+        padding: const EdgeInsets.all(15),
+        child: provider.groups.isEmpty
+            ? Center(
+                child: Container(
+                  decoration: const ShapeDecoration(shape: RoundedRectangleBorder(
+                    side: BorderSide(color: AppColors.primaryColorLight, width: 3),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(5),topRight: Radius.circular(5),
+                      topLeft: Radius.circular(25), bottomRight: Radius.circular(25))
+                  ),
+                  color: AppColors.primaryColorDark),
+                  padding: const EdgeInsets.all(15),
+                  child: const Text(
+                    'Nenhum grupo criado',
+                    style: AppTextStyles.labelStyleLarge
+                  ),
+                ),
+              )
+            : ListView.builder(
+                shrinkWrap: true,
+                itemCount: provider.groups.length,
+                itemBuilder: (context, groupIndex) =>
+                    groupWidget(provider, groupIndex),
+              ),
       );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 50,
-        backgroundColor: AppColors.primaryColor,
+        centerTitle: true,
+        title: const Text('GRUPOS DE REGISTRO'),
       ),
       persistentFooterAlignment: AlignmentDirectional.bottomCenter,
-      
-      
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: newRegistryFooter(context),
       body: Selector<RegistryGroupsProvider, RegistryGroupsProviderStatus>(
@@ -114,10 +116,14 @@ class _RegistryGroupsPageState extends State<RegistryGroupsPage>
               child: CircularProgressIndicator(),
             ),
           RegistryGroupsProviderStatus.failed => Center(
-              child: Text(context.read<RegistryGroupsProvider>().errorMessage!),
+              child: Text(
+                context.read<RegistryGroupsProvider>().errorMessage!,
+                style: AppTextStyles.labelStyleLarge,
+              ),
             ),
           RegistryGroupsProviderStatus.loaded => Container(
-              decoration: const BoxDecoration(gradient: AppGradients.primaryColors),
+              decoration:
+                  const BoxDecoration(gradient: AppGradients.primaryColors),
               child: loadedGroups(context.read<RegistryGroupsProvider>()))
         },
       ),

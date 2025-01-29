@@ -4,8 +4,9 @@ import 'package:plain_registry_app/core/theme/app_colors.dart';
 abstract class AppGradients {
   static const LinearGradient primaryColors = LinearGradient(
     colors: [
+      AppColors.primaryColorDark,
       AppColors.primaryColor,
-      AppColors.primaryColorLight
+      AppColors.primaryColorLight,
     ],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
@@ -13,8 +14,9 @@ abstract class AppGradients {
 
   static const LinearGradient primaryColorsDark = LinearGradient(
     colors: [
-      AppColors.primaryColor,
       AppColors.primaryColorDark,
+      AppColors.primaryColor,
+      
     ],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
@@ -22,8 +24,8 @@ abstract class AppGradients {
 
   static const LinearGradient actionColors = LinearGradient(
     colors: [
-      AppColors.primaryColorLight,
       AppColors.primaryColor,
+      AppColors.primaryColorLight,
     ],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
@@ -32,8 +34,8 @@ abstract class AppGradients {
 
   static const LinearGradient positiveActionColors = LinearGradient(
     colors: [
-      AppColors.greenLight,
       AppColors.greenDark,
+      Color.fromARGB(255, 30, 255, 180),
     ],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
