@@ -98,7 +98,7 @@ class _RegistryGroupsPageState extends State<RegistryGroupsPage>
                     groupWidget(provider, groupIndex),
               ),
       );
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
