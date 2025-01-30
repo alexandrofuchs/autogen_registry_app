@@ -1,3 +1,4 @@
+import 'package:autogen_registry_app/core/widgets/snackbars/app_snackbars.dart';
 import 'package:flutter/material.dart';
 import 'package:autogen_registry_app/core/theme/app_colors.dart';
 import 'package:autogen_registry_app/core/theme/app_gradients.dart';
@@ -6,10 +7,8 @@ import 'package:autogen_registry_app/core/theme/app_text_styles.dart';
 mixin CommonWidgets {
   Widget titleContainer(String text, {Function()? backAction}) => Container(
                 decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(color: AppColors.secundaryColor, width: 2)),
           borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
-          gradient: AppGradients.primaryColorsDark,
+          color: AppColors.primaryColorDark,
         ),
         height: 50,
         child: Row(
@@ -34,6 +33,33 @@ mixin CommonWidgets {
           ],
         ),
       );
+
+  Widget toolWidget(BuildContext context, IconData icon, String label, {Function()? action}) =>
+    GestureDetector(
+      onTap: () {
+        if(action == null){
+          AppSnackbars.showErrorSnackbar(context, 'ainda não implementado');
+          return;  
+        }
+        action();
+      },
+      child: Container(decoration: ShapeDecoration(shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            color: AppColors.primaryColor), 
+             margin: const EdgeInsets.all(5),
+             padding: const EdgeInsets.all(5),
+             height: 35, width: 35, child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+               children: [
+                 Icon(icon, color: AppColors.secundaryColor, size: 24, semanticLabel: label, ),
+                 
+               ],
+             ),
+             
+             ),
+    );
 
   Widget pageHeader(String label) => Container(
       alignment: Alignment.bottomCenter,

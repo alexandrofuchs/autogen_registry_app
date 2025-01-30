@@ -1,19 +1,18 @@
+import 'package:autogen_registry_app/workflow/home/home_worflow.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:autogen_registry_app/core/common/text_input/text_input_validator.dart';
 import 'package:autogen_registry_app/core/common/text_input/text_input_builder.dart';
 import 'package:autogen_registry_app/core/theme/app_colors.dart';
 import 'package:autogen_registry_app/core/theme/app_gradients.dart';
 import 'package:autogen_registry_app/core/theme/app_text_styles.dart';
-import 'package:autogen_registry_app/core/widgets/appbar/appbar_widgets.dart';
 import 'package:autogen_registry_app/core/widgets/common/common_widgets.dart';
 import 'package:autogen_registry_app/core/widgets/snackbars/app_snackbars.dart';
 import 'package:autogen_registry_app/workflow/home/domain/models/registry_model.dart';
-import 'package:autogen_registry_app/workflow/chat/presenter/chat_page.dart';
-import 'package:autogen_registry_app/workflow/chat/presenter/chat_provider.dart';
 import 'package:autogen_registry_app/workflow/home/presenter/pages/groups/registry_groups_provider.dart';
 import 'package:autogen_registry_app/root/app_router.dart';
 import 'package:provider/provider.dart';
+
+part 'new_registry_widgets.dart';
 
 class NewRegistryPage extends StatefulWidget {
   const NewRegistryPage({super.key});
@@ -23,15 +22,8 @@ class NewRegistryPage extends StatefulWidget {
 }
 
 class _NewRegistryPageState extends State<NewRegistryPage>
-    with CommonWidgets, AppbarWidgets {
-  late final List<String> _groups;
-
-  late final ValueNotifier<int> _selectedGroupIndex;
-  late final ValueNotifier<int> _selectedFileTypeIndex;
-
-  late final TextInputValidator _descriptionTextInput;
-  late final TextInputValidator _groupTextInput;
-
+    with CommonWidgets, NewRegistryWidgets {
+  
   @override
   void initState() {
     _selectedGroupIndex = ValueNotifier(0);
@@ -40,7 +32,7 @@ class _NewRegistryPageState extends State<NewRegistryPage>
     _groups = [
       'Selecione um grupo...',
       'Novo grupo',
-      ...context.read<RegistryGroupsProvider>().groups
+      ...context.read<RegistryGroupsProvider>().groups,
     ];
 
     _groupTextInput = TextInputValidator();
@@ -55,6 +47,8 @@ class _NewRegistryPageState extends State<NewRegistryPage>
 
     _selectedFileTypeIndex.dispose();
     _selectedGroupIndex.dispose();
+    _groupTextInput.dispose();
+    _descriptionTextInput.dispose();
   }
 
   void validateAndCreateFileAction() {
@@ -67,16 +61,15 @@ class _NewRegistryPageState extends State<NewRegistryPage>
     _groupTextInput.hasError = _groupTextInput.text.isEmpty;
 
     if (![
-      _groupTextInput.controller.text.isNotEmpty,
-      _descriptionTextInput.controller.text.isNotEmpty,
+      _descriptionTextInput.text.isNotEmpty,
+      _descriptionTextInput.text.isNotEmpty,
     ].every((e) => e)) {
       AppSnackbars.showErrorSnackbar(
           context, 'preencha todos os campos corretamente');
       return;
     }
 
-    late RegistryType itemType =
-        RegistryType.values[_selectedFileTypeIndex.value];
+    RegistryType itemType = RegistryType.values[_selectedFileTypeIndex.value];
 
     final item = RegistryModel(
       id: null,
@@ -91,77 +84,39 @@ class _NewRegistryPageState extends State<NewRegistryPage>
 
     switch (itemType) {
       case RegistryType.textGeneration:
-        Navigator.pushReplacement(
-            context,
-            AppRouter.createRoute(ChangeNotifierProvider(
-                create: (context) => ChatProvider(GetIt.I.get()),
-                child: ChatPage(
-                  registry: item,
-                ))));
+        Navigator.pushReplacement(context, AppRouter.route(HomeWorflow.newRegistryPage(item)));
         break;
     }
   }
 
-  Widget selectField<DataType extends Object>(List<DataType> options,
-          ValueNotifier<int> selectedValue, Function(int value) onSelected) =>
-      fieldContainer(
-          child: ValueListenableBuilder(
-              valueListenable: selectedValue,
-              builder: (context, value, child) => DropdownButton<int>(
-                    padding: const EdgeInsets.only(
-                        left: 15, right: 15, top: 5, bottom: 5),
-                    elevation: 0,
-                    alignment: Alignment.centerRight,
-                    isExpanded: true,
-                    value: selectedValue.value,
-                    style: AppTextStyles.labelStyleSmall,
-                    dropdownColor: AppColors.primaryColorDark,
-                    iconEnabledColor: AppColors.secundaryColor,
-                    items: options
-                        .map<DropdownMenuItem<int>>((e) => DropdownMenuItem(
-                              value: options.indexOf(e),
-                              child: Text(e.toString()),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      if (value == null) return;
-                      onSelected(value);
-                    },
-                  )));
+  Widget form() => ListView(shrinkWrap: true, children: [
+        selectField(RegistryType.values, _selectedFileTypeIndex, (value) {
+          _selectedFileTypeIndex.value = value;
+        }),
+        selectField(_groups, _selectedGroupIndex, (value) {
+          _selectedGroupIndex.value = value;
+          if (value < 2) {
+            _groupTextInput.text = '';
+            return;
+          }
+          _groupTextInput.text = _groups[value];
+        }),
+        groupTextField(),
+        descriptionTextField(),
+        const SizedBox(height: 15),
+      ]);
 
-  Widget addNewFileButtomHeader() => Container(
-        decoration: const BoxDecoration(
-          gradient: AppGradients.primaryColors,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(25), topRight: Radius.circular(25)),
-          color: AppColors.primaryColor,
-        ),
-        height: 50,
-        alignment: Alignment.center,
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+  Widget actions() => Padding(
+        padding: const EdgeInsets.only(bottom: 25),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Icon(
-              Icons.arrow_back,
-              color: AppColors.secundaryColor,
-            ),
-            Text(
-              'Adicionar novo arquivo',
-              style: AppTextStyles.labelStyleLarge,
-            ),
+            negativeActionButton('VOLTAR', () => Navigator.pop(context)),
+            positiveActionButton('AVANÇAR', validateAndCreateFileAction),
           ],
         ),
       );
-
-  Widget groupTextField() => ValueListenableBuilder(
-      valueListenable: _selectedGroupIndex,
-      builder: (context, value, child) => value == 1
-          ? TextInputBuilder(
-              label: 'Nome do grupo...',
-              inputValidator: _groupTextInput,
-              errorText: 'Informe o nome do grupo',
-            )
-          : const SizedBox());
 
   @override
   Widget build(BuildContext context) {
@@ -176,46 +131,15 @@ class _NewRegistryPageState extends State<NewRegistryPage>
         decoration: const BoxDecoration(
           gradient: AppGradients.primaryColors,
         ),
-        child: Column(
+        child: Hero(tag: 'new_registry', child: Column(
           children: [
             Expanded(
-              child: ListView(shrinkWrap: true, children: [
-                selectField(RegistryType.values, _selectedFileTypeIndex,
-                    (value) {
-                  _selectedFileTypeIndex.value = value;
-                }),
-                selectField(_groups, _selectedGroupIndex, (value) {
-                  _selectedGroupIndex.value = value;
-                  if (value < 2) {
-                    _groupTextInput.text = '';
-                    return;
-                  }
-                  _groupTextInput.text = _groups[value];
-                }),
-                groupTextField(),
-                TextInputBuilder(
-                  label: 'Uma breve descrição...',
-                  errorText: 'Descreva o registro',
-                  inputValidator: _descriptionTextInput,
-                  maxLength: 50,
-                ),
-                const SizedBox(height: 15),
-              ]),
+              child: form(),
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 25),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  negativeActionButton('VOLTAR', () => Navigator.pop(context)),
-                  positiveActionButton('AVANÇAR', validateAndCreateFileAction),
-                ],
-              ),
-            )
+            actions(),
           ],
         ),
-      ),
+      )),
     );
   }
 }

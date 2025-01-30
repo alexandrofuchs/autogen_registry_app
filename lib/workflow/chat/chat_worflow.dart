@@ -19,7 +19,7 @@ abstract class ChatWorkflow {
 
   static Widget chatPage(RegistryModel model) =>
     ChangeNotifierProvider<ChatProvider>(
-        create:(context) => ChatProvider(GetIt.I.get()
+      create:(context) => ChatProvider(GetIt.I.get(),
     ),
     child: ChatPage(registry: model),
     );

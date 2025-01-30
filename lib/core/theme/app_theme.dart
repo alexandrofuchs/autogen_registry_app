@@ -6,6 +6,11 @@ abstract class AppTheme {
   static ThemeData defaultTheme(BuildContext context) =>
       ThemeData.light().copyWith(
         scaffoldBackgroundColor: AppColors.primaryColorDark,
+        indicatorColor: AppColors.secundaryColor,
+        progressIndicatorTheme: const ProgressIndicatorThemeData(
+          circularTrackColor: AppColors.primaryColorLight,
+          color: AppColors.backgroundColor,
+        ),
         appBarTheme: const AppBarTheme(
           backgroundColor: AppColors.primaryColorDark,
           elevation: 0,
@@ -19,6 +24,7 @@ abstract class AppTheme {
         bottomAppBarTheme: const BottomAppBarTheme(
           color: AppColors.secundaryColor,
         ),
+        
         textTheme: const TextTheme(
           titleLarge: AppTextStyles.titleStyleLarge,
           titleMedium: AppTextStyles.titleStyleMedium,

@@ -12,7 +12,7 @@ enum RouteTransition{
 }
 
 abstract class AppRouter {
-  static Route<T> createRoute<T>(Widget page, {RouteTransition transition = RouteTransition.rightToLeft} ) {
+  static Route<T> route<T>(Widget page, {RouteTransition transition = RouteTransition.rightToLeft} ) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

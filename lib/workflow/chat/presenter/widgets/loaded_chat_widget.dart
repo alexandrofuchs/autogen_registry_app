@@ -32,7 +32,7 @@ class _LoadedChatWidgetState extends State<LoadedChatWidget>
   Future<void> showNewMessageModal([TextMessage? message]) async {
 
     _messageTextInput.text =  message == null ? '' : 'Detalhe pra mim sobre o seguinte trecho:\n\n "${message.text}"\n\n';
-
+    _messageTextInput.hasError = false;
      await showModalBottomSheet(
                 context: context,
                 builder: (context) => newMessageField(message),
@@ -120,97 +120,110 @@ class _LoadedChatWidgetState extends State<LoadedChatWidget>
                       );
 
   Widget newMessageField([TextMessage? textMessage]) => Scaffold(
-        appBar: AppBar(toolbarHeight: 50),
         backgroundColor: AppColors.primaryColor,
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 0),
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView(
-                    children: [
-                      titleContainer('Nova mensagem'),
-                      
-                      textMessage != null ?
-                        ValueListenableBuilder(valueListenable: _messageTextInput.controller, builder:(context, value, child) => 
-                          Padding(
-                            padding: const EdgeInsets.all(25),
-                            child: textMessageWidget(textMessage),
-                          )
-                              
-                          
-                        ) : const SizedBox(),
-                  
-                      title('Personalize a sua mensagem abaixo: '),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: actionButton(Icons.clear, 'LIMPAR', (){
-                          _messageTextInput.text = '';
-                        }),
-                      ),
-                      ColoredBox(
-                        color: AppColors.primaryColor,
-                        child: Container(
+          child: Container(
+              decoration: const BoxDecoration(gradient: AppGradients.primaryColors),
+            padding: const EdgeInsets.only(top: 75),
+            child:  Column(
+                children: [
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        
+                        
+                        textMessage != null ?
+                          ValueListenableBuilder(valueListenable: _messageTextInput.controller, builder:(context, value, child) => 
+                            Padding(
+                              padding: const EdgeInsets.all(25),
+                              child: textMessageWidget(textMessage),
+                            )
+                                
+                            
+                          ) : const SizedBox(),
+                    
+                        title('Personalize a sua mensagem abaixo: '),
+                       
+                        Container(
                           margin: const EdgeInsets.all(0),
                           padding: const EdgeInsets.all(0),
                           decoration: ShapeDecoration(
-                            
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5)),
                           ),
-                          child: TextInputBuilder(
-                            errorText: 'mensagem invalida',
-                            inputValidator: _messageTextInput,
-                            label: 'Digite sua mensagem...',
+                          child: Stack(
+                            children: [
+                              TextInputBuilder(
+                                errorText: 'mensagem inválida',
+                                maxLines: 10,
+                                inputValidator: _messageTextInput,
+                                label: 'Digite sua mensagem...',
+                                padding: const EdgeInsets.only(right: 50, bottom: 15, left: 15, top: 15),
+                              ),
+                               Container(
+                                padding: const EdgeInsets.only(right: 25, top: 25),
+                                alignment: Alignment.topRight,
+                                child: toolWidget(
+                                    context, Icons.clear, 'LIMPAR', action: () {
+                                  _messageTextInput.text = '';
+                                }),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                      
-                    ],
-                  ),
-                ),
-                Container(
-                      color: AppColors.primaryColor,
-                      padding: const EdgeInsets.only(bottom: 25),
-                      child: 
-                        Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          negativeActionButton('Cancelar', () {
-                            Navigator.pop(context);
-                          }),
-                          positiveActionButton('Enviar', ()  {
-                            final messages = [
-                              ...context.read<ChatProvider>().chat.messages,
-                              TextMessage(
-                                  id: DateTime.now().millisecondsSinceEpoch,
-                                  sender: MessageSender.user,
-                                  text: _messageTextInput.text)
-                            ];
-                
-                            widget.loadingMessage.value = true;
-                            widget.textMessageController.generateAnswer(messages);
-                            if(!mounted) return;
-                            Navigator.pop(context);
-                          }),
-                        ],
-                      ),        
-                    
-                    
-                    
+                        
+                      ],
                     ),
-              ],
+                  ),
+                  Container(
+                        padding: const EdgeInsets.only(bottom: 25),
+                        child: 
+                          Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            negativeActionButton('VOLTAR', () {
+                              Navigator.pop(context);
+                            }),
+                            positiveActionButton('ENVIAR', ()  {
+
+                              if(_messageTextInput.text.isEmpty){
+                                AppSnackbars.showErrorSnackbar(context, 'Digite alguma instrução');
+                                return;
+                              } 
+
+                              final messages = [
+                                ...context.read<ChatProvider>().chat.messages,
+                                TextMessage(
+                                    id: DateTime.now().millisecondsSinceEpoch,
+                                    sender: MessageSender.user,
+                                    text: _messageTextInput.text)
+                              ];
+                  
+                              widget.loadingMessage.value = true;
+                              widget.textMessageController.generateAnswer(messages);
+                              if(!mounted) return;
+                              Navigator.pop(context);
+                            }),
+                          ],
+                        ),        
+                      
+                      
+                      
+                      ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
+        );
 
   Widget newMessageWidget() =>
     ValueListenableBuilder(
                           valueListenable: widget.loadingMessage, builder:(context, isLoading, child) => 
                             isLoading ?
-                              const Center(child: CircularProgressIndicator(),) : child ?? const SizedBox(),
+                              Container(
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(5),  
+                                child: const CircularProgressIndicator(),) : child ?? const SizedBox(),
                               child: GestureDetector(
             onTap: () {
               showNewMessageModal();
@@ -278,10 +291,19 @@ class _LoadedChatWidgetState extends State<LoadedChatWidget>
             ),
     ));
 
+  Widget toolsWidget() =>
+    Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+      toolWidget(context, Icons.share, 'share'),
+      toolWidget(context, Icons.picture_as_pdf, 'pdf'),
+    ],);
+
   @override
   Widget build(BuildContext context) => Column(
         children: [
           tipWidget(),
+          toolsWidget(),
           Expanded(
             child: StreamBuilder<List<TextMessage>>(
                 stream: widget.textMessageController.onNewMessage,

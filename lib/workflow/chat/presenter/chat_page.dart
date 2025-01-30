@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:autogen_registry_app/core/widgets/snackbars/app_snackbars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -12,7 +12,6 @@ import 'package:autogen_registry_app/core/theme/app_colors.dart';
 import 'package:autogen_registry_app/core/theme/app_gradients.dart';
 import 'package:autogen_registry_app/core/theme/app_text_styles.dart';
 import 'package:autogen_registry_app/core/widgets/common/common_widgets.dart';
-import 'package:autogen_registry_app/core/widgets/snackbars/app_snackbars.dart';
 import 'package:autogen_registry_app/workflow/chat/domain/models/chat.dart';
 import 'package:autogen_registry_app/workflow/chat/domain/models/text_message.dart';
 import 'package:autogen_registry_app/workflow/chat/presenter/chat_provider.dart';
@@ -124,15 +123,7 @@ class _ChatPageState extends State<ChatPage> with CommonWidgets {
       appBar: AppBar(
         toolbarHeight: 75,
         centerTitle: true,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(widget.registry.description.toUpperCaseFirst()),
-            IconButton(onPressed: (){
-              AppSnackbars.showErrorSnackbar(context, 'Ainda não implementado');
-            }, icon: const Icon(Icons.notification_add))
-          ],
-        ),
+        title: Text(widget.registry.description.toUpperCaseFirst()),
       ),
       
       persistentFooterAlignment: AlignmentDirectional.center,

@@ -10,6 +10,8 @@ class TextInputBuilder extends StatelessWidget {
   final int? maxLines;
   final bool hasError = false;
   final String errorText;
+  final EdgeInsets margin;
+  final EdgeInsets padding;
 
   const TextInputBuilder(
       {super.key,
@@ -17,6 +19,8 @@ class TextInputBuilder extends StatelessWidget {
       required this.inputValidator,
       this.maxLength,
       this.maxLines,
+      this.margin = const EdgeInsets.all(15),
+      this.padding = const EdgeInsets.all(15),
       required this.errorText});
 
   @override
@@ -36,6 +40,7 @@ class TextInputBuilder extends StatelessWidget {
                 bottomLeft: Radius.circular(25),
                 bottomRight: Radius.circular(45))),
         margin: const EdgeInsets.all(15),
+        padding: padding,
         child: TextField(
           controller: inputValidator.controller,
           style: AppTextStyles.labelStyleSmall,
