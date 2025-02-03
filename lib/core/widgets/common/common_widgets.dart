@@ -7,10 +7,11 @@ import 'package:autogen_registry_app/core/theme/app_text_styles.dart';
 mixin CommonWidgets {
   Widget titleContainer(String text, {Function()? backAction}) => Container(
                 decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+          boxShadow: [BoxShadow(color: AppColors.primaryColorDark, blurRadius: 15, offset: Offset(0, -1))],
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(0), topRight: Radius.circular(0)),
           color: AppColors.primaryColorDark,
         ),
-        height: 50,
+        height: 60,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -26,7 +27,7 @@ mixin CommonWidgets {
               child: Text(
                 text,
                 textAlign: TextAlign.center,
-                style: AppTextStyles.labelStyleLarge,
+                style: AppTextStyles.labelStyleLarge.copyWith(fontWeight: FontWeight.normal),
               ),
             ),
             

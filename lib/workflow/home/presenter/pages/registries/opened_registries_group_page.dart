@@ -1,3 +1,5 @@
+import 'package:autogen_registry_app/core/widgets/common/common_widgets.dart';
+import 'package:autogen_registry_app/workflow/home/home_worflow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:autogen_registry_app/core/helpers/formatters/datetime_formatters.dart';
@@ -23,8 +25,7 @@ class OpenedRegistriesGroupPage extends StatefulWidget {
 }
 
 class _OpenedRegistriesGroupPageState extends State<OpenedRegistriesGroupPage>
-    with SearchbarWidget, OpenedRegistriesGroupWidgets {
-  
+    with SearchbarWidget, OpenedRegistriesGroupWidgets, CommonWidgets {
   @override
   initState() {
     context.read<RegistriesProvider>().loadByGroup(widget.group);
@@ -50,6 +51,11 @@ class _OpenedRegistriesGroupPageState extends State<OpenedRegistriesGroupPage>
       ),
       persistentFooterAlignment: AlignmentDirectional.bottomCenter,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: GestureDetector(
+        onTap: () {
+          Navigator.push(context, AppRouter.route(HomeWorflow.newRegistryPage(specificGroup: widget.group)));
+        },
+        child: titleContainer('Grupo ${widget.group}: novo registro')),
       body: openedGroupWidget(),
     );
   }

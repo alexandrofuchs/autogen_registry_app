@@ -7,7 +7,7 @@ mixin NewRegistryWidgets on CommonWidgets{
   late final TextInputValidator _descriptionTextInput;
   late final TextInputValidator _groupTextInput;
 
-  late final List<String> _groups;
+  late final List<String> _groupsToSelect;
 
 
   Widget selectField<DataType extends Object>(List<DataType> options,

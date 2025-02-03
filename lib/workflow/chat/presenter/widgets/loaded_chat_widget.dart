@@ -31,7 +31,8 @@ class _LoadedChatWidgetState extends State<LoadedChatWidget>
 
   Future<void> showNewMessageModal([TextMessage? message]) async {
 
-    _messageTextInput.text =  message == null ? '' : 'Detalhe pra mim sobre o seguinte trecho:\n\n "${message.text}"\n\n';
+    _messageTextInput.text =  message == null ? '' : 'Detalhe pra mim sobre o seguinte trecho:\n\n "${
+      message.text.replaceAll('**', ' ').replaceAll('_', '').replaceAll('\n', '')}"';
     _messageTextInput.hasError = false;
      await showModalBottomSheet(
                 context: context,
@@ -41,35 +42,64 @@ class _LoadedChatWidgetState extends State<LoadedChatWidget>
   }
 
 
-  Widget _textMessageBody(TextMessage message) => Padding(
+  Widget _textMessageBody(TextMessage message) => 
+    Padding(
         padding: const EdgeInsets.all(5),
-        child: Markdown(
-            shrinkWrap: true,
-            selectable: true,
-            softLineBreak: true,
-            onSelectionChanged: (text, selection, cause) async {
-              if(text == null) return;
-              debugPrint(text);
-               await showNewMessageModal(TextMessage(id: message.id, sender: message.sender, text: text));
-            },
-            physics: const NeverScrollableScrollPhysics(),
-            styleSheet: MarkdownStyleSheet(
-              textAlign: WrapAlignment.start,
-              p: AppTextStyles.labelStyleSmall,
-              h1Align: WrapAlignment.center,
-              strong: AppTextStyles.labelStyleMedium.copyWith(fontWeight: FontWeight.w700),
-              codeblockPadding: const EdgeInsets.all(15),
-              code: AppTextStyles.labelStyleSmall,
-              codeblockDecoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  color: Colors.black),
-              h1: AppTextStyles.labelStyleLarge,
-              h2: AppTextStyles.labelStyleMedium,
-              
-            ),
-            data: message.text.replaceAll('**', ' ')),
+        child: Stack(
+          alignment: Alignment.topRight,
+          children: [
+            Markdown(
+              padding: const EdgeInsets.only(right: 30, top: 25, left: 15, bottom: 25),
+                shrinkWrap: true,
+                selectable: true,
+                softLineBreak: true,
+                onSelectionChanged: (text, selection, cause) async {
+                  if(text == null) return;
+                  debugPrint(text);
+                   await showNewMessageModal(TextMessage(id: message.id, sender: message.sender, text: text));
+                },
+                physics: const NeverScrollableScrollPhysics(),
+                styleSheetTheme: MarkdownStyleSheetBaseTheme.material,
+                styleSheet: MarkdownStyleSheet(
+                  a: AppTextStyles.labelStyleSmall,
+                  blockquote: AppTextStyles.labelStyleSmall,
+                  checkbox: AppTextStyles.labelStyleSmall,
+                  del: AppTextStyles.labelStyleSmall,
+                  em: AppTextStyles.labelStyleSmall,
+                  h1: AppTextStyles.labelStyleSmall,
+                  h2: AppTextStyles.labelStyleSmall.copyWith(fontSize: 11),
+                  h3: AppTextStyles.labelStyleSmall.copyWith(fontSize: 10),
+                  h4: AppTextStyles.labelStyleSmall.copyWith(fontSize: 9),
+                  h5: AppTextStyles.labelStyleSmall.copyWith(fontSize: 8),
+                  h6: AppTextStyles.labelStyleSmall.copyWith(fontSize: 7),
+                  img: AppTextStyles.labelStyleSmall,
+                  listBullet: AppTextStyles.labelStyleSmall,
+                  tableHead: AppTextStyles.labelStyleSmall,
+                  textAlign: WrapAlignment.start,
+                  p: AppTextStyles.labelStyleSmall,
+                  h1Align: WrapAlignment.center,
+                  strong: AppTextStyles.labelStyleMedium.copyWith(fontWeight: FontWeight.w700),
+                  codeblockPadding: const EdgeInsets.all(15),
+                  code: AppTextStyles.labelStyleSmall,
+                  tableBody: AppTextStyles.labelStyleSmall.copyWith(fontSize: 8),
+                  tableCellsPadding: const EdgeInsets.all(2),
+                  tableBorder: TableBorder.all(color: AppColors.primaryColorLight),
+                  codeblockDecoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      color: Colors.black),
+                  
+                 
+                  
+                ),
+                data: message.text),
+          toolWidget(context, Icons.reply_outlined, 'a', action: () {
+            showNewMessageModal(message);
+          },),
+          ],
+          
+        ),
       );
 
   Widget _textMessageHeader(TextMessage message) => Container(
@@ -82,9 +112,10 @@ class _LoadedChatWidgetState extends State<LoadedChatWidget>
           )),
         color: Colors.black.withAlpha(100)),
 
-        padding: const EdgeInsets.only(right: 25, top: 15, bottom: 15, left: 15),
+        padding: const EdgeInsets.only(right: 25, left: 25, top: 10, bottom: 10),
         child: Text(
           "${message.sender.label} - ${DateTime.fromMillisecondsSinceEpoch(message.id).toDateString()} ${DateTime.fromMillisecondsSinceEpoch(message.id).toHourString()}",
+          textAlign: TextAlign.right,
           style: AppTextStyles.labelStyleSmall
               .copyWith(fontWeight: FontWeight.w600, fontStyle: FontStyle.italic),
         ),
@@ -110,7 +141,7 @@ class _LoadedChatWidgetState extends State<LoadedChatWidget>
             _textMessageHeader(message),
             _textMessageBody(message),
           ],
-        ).animate().fadeIn(begin: 200, duration: const Duration(milliseconds: 300)),
+        ),
       );
 
   Widget title(String text) =>

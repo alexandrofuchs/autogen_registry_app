@@ -21,6 +21,12 @@ class RegistryGroupsProvider extends ChangeNotifier {
   List<String> get groups => _sourceList ?? [];
 
   Future<void> load() async {
+
+    if(_status != RegistryGroupsProviderStatus.loading){
+      _status = RegistryGroupsProviderStatus.loading;
+      notifyListeners();
+    }
+
     final response = await _repository.load();
     response.resolve(onFail: (message) {
       _errorMessage = message;

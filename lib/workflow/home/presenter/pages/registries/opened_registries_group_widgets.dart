@@ -79,6 +79,7 @@ mixin OpenedRegistriesGroupWidgets on SearchbarWidget {
 
   Widget openedGroupWidget() => Container(
       decoration: const BoxDecoration(gradient: AppGradients.primaryColors),
+      margin: EdgeInsets.only(bottom: 25),
       child: Selector<RegistriesProvider, RegistriesProviderStatus>(
           selector: (context, provider) => provider.status,
           builder: (context, status, child) => switch (status) {

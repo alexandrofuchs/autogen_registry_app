@@ -1,6 +1,4 @@
-import 'package:autogen_registry_app/workflow/chat/presenter/chat_page.dart';
-import 'package:autogen_registry_app/workflow/chat/presenter/chat_provider.dart';
-import 'package:autogen_registry_app/workflow/home/domain/models/registry_model.dart';
+import 'package:autogen_registry_app/workflow/home/presenter/pages/new_registry/new_registry_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:autogen_registry_app/core/services/app_cameras.dart';
@@ -27,21 +25,21 @@ abstract class HomeWorflow {
   static Widget openedRegistryGroupPage(String param) =>
       ChangeNotifierProvider<RegistriesProvider>(
         create: (context) => RegistriesProvider(GetIt.I.get()),
-        builder: (context, child) => child ?? const Center(child: CircularProgressIndicator(),),
+        builder: (context, child) =>
+            child ??
+            const Center(
+              child: CircularProgressIndicator(),
+            ),
         child: OpenedRegistriesGroupPage(group: param),
       );
 
   static Widget groupsPage() => ChangeNotifierProvider<RegistryGroupsProvider>(
         create: (context) => RegistryGroupsProvider(GetIt.I.get()),
-        builder: (context, child) => child ?? 
-          const Center(child: CircularProgressIndicator(),),
-        lazy: true,
+        builder: (context, child) => child!,
+        
         child: const RegistryGroupsPage(),
       );
 
-  static Widget newRegistryPage(RegistryModel registry) =>
-      ChangeNotifierProvider(
-        create: (context) => ChatProvider(GetIt.I.get()),
-        child: ChatPage(registry: registry),
-      );
+  static Widget newRegistryPage({List<String>? groups, String? specificGroup}) =>
+      NewRegistryPage(groups: groups, specificGroup: specificGroup,);
 }

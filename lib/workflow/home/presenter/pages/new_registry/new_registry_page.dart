@@ -1,4 +1,4 @@
-import 'package:autogen_registry_app/workflow/home/home_worflow.dart';
+import 'package:autogen_registry_app/workflow/chat/chat_worflow.dart';
 import 'package:flutter/material.dart';
 import 'package:autogen_registry_app/core/common/text_input/text_input_validator.dart';
 import 'package:autogen_registry_app/core/common/text_input/text_input_builder.dart';
@@ -8,14 +8,15 @@ import 'package:autogen_registry_app/core/theme/app_text_styles.dart';
 import 'package:autogen_registry_app/core/widgets/common/common_widgets.dart';
 import 'package:autogen_registry_app/core/widgets/snackbars/app_snackbars.dart';
 import 'package:autogen_registry_app/workflow/home/domain/models/registry_model.dart';
-import 'package:autogen_registry_app/workflow/home/presenter/pages/groups/registry_groups_provider.dart';
 import 'package:autogen_registry_app/root/app_router.dart';
-import 'package:provider/provider.dart';
 
 part 'new_registry_widgets.dart';
 
 class NewRegistryPage extends StatefulWidget {
-  const NewRegistryPage({super.key});
+  final List<String>? groups;
+  final String? specificGroup;
+
+  const NewRegistryPage({super.key, required this.groups, this.specificGroup});
 
   @override
   State<StatefulWidget> createState() => _NewRegistryPageState();
@@ -29,11 +30,15 @@ class _NewRegistryPageState extends State<NewRegistryPage>
     _selectedGroupIndex = ValueNotifier(0);
     _selectedFileTypeIndex = ValueNotifier(0);
 
-    _groups = [
+    if(widget.specificGroup != null){
+      _groupsToSelect = [widget.specificGroup!];
+    }else {
+      _groupsToSelect = [
       'Selecione um grupo...',
       'Novo grupo',
-      ...context.read<RegistryGroupsProvider>().groups,
+      ...(widget.groups ?? []),
     ];
+    }
 
     _groupTextInput = TextInputValidator();
     _descriptionTextInput = TextInputValidator();
@@ -52,7 +57,7 @@ class _NewRegistryPageState extends State<NewRegistryPage>
   }
 
   void validateAndCreateFileAction() {
-    if (_selectedGroupIndex.value == 0) {
+    if (_selectedGroupIndex.value == 0 && _groupsToSelect.length > 1) {
       AppSnackbars.showErrorSnackbar(context, 'Selecione ou crie um grupo');
       return;
     }
@@ -84,7 +89,7 @@ class _NewRegistryPageState extends State<NewRegistryPage>
 
     switch (itemType) {
       case RegistryType.textGeneration:
-        Navigator.pushReplacement(context, AppRouter.route(HomeWorflow.newRegistryPage(item)));
+        Navigator.pushReplacement(context, AppRouter.route(ChatWorkflow.chatPage(item)));
         break;
     }
   }
@@ -93,13 +98,13 @@ class _NewRegistryPageState extends State<NewRegistryPage>
         selectField(RegistryType.values, _selectedFileTypeIndex, (value) {
           _selectedFileTypeIndex.value = value;
         }),
-        selectField(_groups, _selectedGroupIndex, (value) {
+        selectField(_groupsToSelect, _selectedGroupIndex, (value) {
           _selectedGroupIndex.value = value;
           if (value < 2) {
             _groupTextInput.text = '';
             return;
           }
-          _groupTextInput.text = _groups[value];
+          _groupTextInput.text = _groupsToSelect[value];
         }),
         groupTextField(),
         descriptionTextField(),
@@ -131,15 +136,14 @@ class _NewRegistryPageState extends State<NewRegistryPage>
         decoration: const BoxDecoration(
           gradient: AppGradients.primaryColors,
         ),
-        child: Hero(tag: 'new_registry', child: Column(
+        child: Column(
           children: [
             Expanded(
               child: form(),
             ),
             actions(),
           ],
-        ),
-      )),
+        )),
     );
   }
 }
